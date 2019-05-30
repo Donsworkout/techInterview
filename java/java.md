@@ -1,3 +1,5 @@
+[목록으로](https://github.com/Donsworkout/techInterview/blob/master/README.md)
+
 ## 1. JDK / JRE / JVM
 
 ![jdk](https://user-images.githubusercontent.com/26560119/58600070-f0afe580-82bd-11e9-8c55-be299736b11b.jpg)
@@ -71,7 +73,7 @@
 
 3. Heap 메모리 중간중간 구멍을 없애기 위해 재구성을 하기도하는데, 옮기는 도중에 다른 쓰레드가 메모리 참조하지 못하도록 모든 쓰레드를 정지시킨다.
 
-=> 결론 : GC를 잘 모니터링 해야 한다. 
+=> 결론 : GC를 잘 모니터링 해야 한다. (stop the world 조심)
 
 
 ## 2. Java EE / SE / ME 차이
@@ -85,3 +87,78 @@ JDBC뜽 기본적인 기능이 들어가 있음
 ### 3) 자바 ME (Micro Edition)  
 폰, 셋톰박스 등에서 java 이용할 수 있도록 만들어진 플랫폼 
 
+
+## 3. 자바 Array / List
+### Array
+> 일반적으로 배열은 크기가 확정되어 있고 인덱스가 중요할 때, 효율이 좋아 많이 쓰인다.
+- 인덱스를 활용하여 빠른 조회가 가능하다.
+- 물리적으로 인접해 있어 cache hit (공간 지역성) 의 가능성이 높아진다.
+- 대신 리스트에 비해 기능이 없다.
+- 가변 배열을 쓰면 기존 배열 그대로 두고 새로운 길이로 배열 할당 후 데이터 복사하고 기존 배열을 삭제한다.
+- 요소 삭제시 메모리가 낭비된다.
+
+### List 
+> 인덱스가 중요하지 않을떄 빈틈없음 데이터의 적재가 가능
+- 순서가 있는 데이터의 모임
+- 배열의 index가 그 배열의 Key 라면, 리스트의 index 는 순서라는 의미 정도이다.
+- 데이터 추가 / 삭제가 많이 일어난다면 리스트가 적합하다.
+
+### 자바의 list / 배열  
+- 자바는 배열과 리스트를 모두 지원한다.
+
+~~~java
+// 배열 - 추가, 삭제가 어렵다. 직접 구현해야한다.
+int[] numbers = {10,20,30,40,50};
+
+// 리스트 (ArrayList)
+ArrayList numbers = new ArrayList();
+
+numbers.add(10); // 추가
+numbers.remove(0); // 삭제
+
+// 리스트 (LinkedList)
+LinkedList numbers = new LinkedList();
+
+numbers.add(10); // 추가
+numbers.remove(0); // 삭제
+~~~
+
+1) ArrayList  
+- 자바의 배열을 이용해서 만든 리스트로, 인덱스를 사용해서 값을 가지고 올떄 매우 빠름
+- 단 추가 / 삭제는 한칸씩 뒤로 밀고 떙기고 하는 과정때매 비교적 느림
+
+2) LinkedList
+- 추가 / 삭제가 빠르다. 
+- 읽는것은 어레이 리스트 보다 느리다. (처음부터 순차 탐색 해야하기 떄문)
+
+
+## 4. Java 의 장단점
+### 장점
+- 운영체제에 독립적이다 (JVM 있음)
+- 객체지향 언어이다. (추상화 ,캡슐화, 상속, 다형성)
+- 자동으로 메모리 관리 해 준다 (JVM GC)
+- 멀티스레딩 API 가 있어 쉽게 구현할 수 있다.
+- 동적 로딩을 지원한다. 고치면 해당 클래스만 재컴파일
+
+### 단점 
+- 조금 느리다. (c++, c에 비해 느리단 말임, 당연히 portability 와 Trade-off)
+
+## 5. DAO / DTO
+
+### 1) DAO
+- DAO는 Persistence Layer(DB에 data를 CRUD하는 계층)이다.
+- JPA로 따지면 QuestionRepository 같은거 
+- MyBatis 같은 경우 Connection 을 여닫는 과정이 있음 
+~~~java 
+@Repository
+public interface DailyStaticRepository extends JpaRepository<DailyStatic, Long> {
+    Optional<DailyStatic> findByMerchantIdAndTradeDate(Merchant merchant, Date tradeDate);
+    List<DailyStatic> findByTradeDate(Date tradedate);
+}
+~~~
+
+### 2) DTO (Data Transfer Object)
+- 읽기 전용 객체는 VO라고 부르기도 한다.
+- 데이터 전송용 객체 
+- 계층간 데이터 교환을 위한 자바빈즈 
+- 계층은 Controller, View, Service, Persistence 계층을 말한다.
