@@ -143,6 +143,125 @@ public class Test_AspectJ {
 
 ~~~
 
-## 3. @Component 와 @Autowired
+## 3. Spring MVC
+![다운로드](https://user-images.githubusercontent.com/26560119/58632046-7a43cf80-831f-11e9-96d8-f9f90ce7d985.png)
 
-## 4. Spring MVC
+1. Client 요청은 항상 Dispatcher Servlet 이 가로챈다.
+2. Dispatcher Servlet이 HandlerMapping 에게 요청을 전달
+3. HandlerMapping은 요청에 맞는 알맞는 컨트롤러 객체를 리턴
+4. DispatcherServlet이 컨트롤러 객체를 HandlerAdapter에 전달하여 알맞는 컨트롤러 메소드를 호출한다. 
+5. 컨트롤러가 서비스 - DAO - Mybatis - DBMS 등을 거쳐 처리한 결과를 모델에 담아 DispatcherServlet에게 다시 리턴한다.
+6. DispatcherServlet은 ViewResolver 객체를 이용하여 뷰를 검색한다.
+7. ViewResolver은 모델에 담긴 View 이름을 이용해서 View 객체를 찾거나 새로 만들어서 DispatcherServlet에게 다시 전달하고,
+8. DS 는 해당 View 객체에게 Client 에게 해당 결과를 보여주도록 한다. 
+
+## 4. JPA vs MyBatis
+
+### 4-1) 영속성 (Persistence)
+- 데이터를 생성한 프로그램의 생명이 다하더라도, 데이터는 남아 있는 것
+- 따라서 우리는 데이터베이스(DISK) 를 통해 영속성을 부여한다.
+- 프로그램 내 계층 중에도 Persistence Layer 가 있다.
+- Persistence Layer 는 데이터에 영속성을 부여해 주는 계층이다.
+- 여기서 JDBC 프로그래밍 없이 영속성을 갖게 해 주는 도구가, Persistence Framework  
+
+
+![spring-jdbc-layer](https://user-images.githubusercontent.com/26560119/58633311-03a8d100-8323-11e9-81bf-1e18a68a6b34.png)
+
+### 4-2) SQL Mapper 과 ORM
+Persistence Framework 는 두가지가 있다.
+#### 1. SQL Mapper  
+- SQL **<- mapping ->** Object 필드 
+- 대표적인 예로는 Mybatis 이고, 실제 SQL을 명시해 주어야 한다.
+- 직접 SQL을 많이 만져야 하는 쿼리가 있는 경우에 좋다.  
+- XML 파일에 쿼리 쓰고 @Autowired 하는 방식 
+
+#### 2. ORM (Object - Relation Mapping)
+- 객체와 RDB 테이블의 데이터를 자동으로 매핑해 주는 도구
+- SQL Query 대신 직관적인 method 로 트랜잭션 할 수 있다. 
+- SQL을 자동으로 생성한다. 
+- Persistence API 라고 할 수 있다. 
+- Hibernate 는 JPA 의 구현체이다. 
+
+#### 2-1) JPA 그리고 Hibernate 
+<img width="996" alt="overall_design" src="https://user-images.githubusercontent.com/26560119/58634478-5a63da00-8326-11e9-811e-02626d70d119.png">
+
+- JPA 는 자바 어플리케이션에서 데이터베이스를 사용하는 방식을 정의한 인터페이스이다.
+- Hibernate 는 JPA를 구현한 구현체이다.
+
+#### 3. ORM의 장점과 단점 
+#### 장점 :
+- 객체지향적인 코드로 직관적이고, 비즈니스 로직에 더 집중할 수 있다.
+- DBMS 에 종속적이지 않다. 
+- 재사용 및 유지보수의 편리성이 증가한다. 
+- JPA 경우 @Query 어노테이션을 사용하여 SQL을 직접 쓸 수 있으나, 복잡한 것 뺴고는 JPQL 이용하도록 함 
+
+#### 단점 : 
+- JPA의 내장 메소드로 해결되지 않는 쿼리가 많다.
+- 자주 사용되는 대형 쿼리는 별도의 튜닝이 필요한 경우가 있다. 
+- 최적화된 SQL 쿼리를 사용할때는 MyBatis 가 낫다.
+- 아래 링크 참조   
+https://gmlwjd9405.github.io/2018/12/25/difference-jdbc-jpa-mybatis.html
+- ORM에 대한 개발자들의 생각   
+https://okky.kr/article/286812
+
+## 5. JAR vs WAR
+> class < jar < war < ear  
+
+### 5-1) JAR (Java Application Archive)  
+- java class 파일 및 리소스파일(이미지, 텍스트 등)의 컨테이너이다.
+- jar 파일이 독립실행 되려면, 클래스 중 하나가 기본 클래스로 정의된다. 
+- 실행 가능한 jar 파일은 아래 명령어로 실행된다. (spring 지원)
+~~~
+java -jar foo.jar
+~~~
+
+### 5-2) WAR(Web Application aRchive)
+- 웹 어플리케이션을 저장하고 압축해 놓은 파일
+- html, JSP, 서블릿 소스 등이 컴파일 되어 저장되어 있다. 
+- war는 WAS 위에서 돌아갈 수 있다.  
+- Tomcat 위에 얹어서 디플로이한다. 
+
+## 6. 외장 톰캣 vs 내장 톰캣
+- 별도의 WAS를 구현하고 그 위에 다른 application 과 함께 운영해야 한다면 외장 톰캣
+- 그럴필요 없다면 내장 톰캣을 써도 좋다.  
+- D2 Naver 의 동영상 플랫폼 개발 팀도 embed 톰캣을 쓰더라  
+https://d2.naver.com/helloworld/5626759
+
+## 7. 스프링 Log  
+- 스프링은 LogBack, Log4j 등 여러 로그 라이브러리를 지원한다.
+- Logback 이 Log4j 보다 10배이상 빠르고 메모리 효율성도 좋단다.
+
+### 7-1) Log Level (강한 로그 순서대로)
+1) FATAL : 가장 크리티컬한 에러
+2) ERROR : 에러
+3) WARN : 에러는 아니지만 주의할 것 
+4) INFO : 일반 정보
+5) DEBUG : 일반 정보를 좀 더 상세히 (옵션을 켜야 보임)
+6) TRACE : 에러 시 경로 추적 (스택 트레이스 같은 것)  
+
+## 8. Maven vs Gradle
+
+- 둘다 빌드 툴이다.
+- 라이브러리 Dependency 를 관리한다.
+> Gradle 이 더 좋아보임 (출시 시기도 늦고 ANT, MAVEN 장점만을 모았다고 함)
+
+### GRADLE
+- XML 기반의 Maven 빌드 설정보다 Gradle의 빌드 설정의 가독성이 더 좋다.
+- Gradle의 빌드 성능이 Maven의 빌드 성능보다 더 뛰어나다
+- **Groovy 기반의 DSL(domain-specific language)로 Gradle의 빌드 스크립트를 직접 작성할 수 있다.**
+
+## 9. Spring TEST
+
+- 레일즈는 RSpec, Capybara 등 라이브러리 존재
+- 카피바라로는 패스트원 할떄 로그인, 메뉴진입 등 기본적인 View 기반 테스트 진행 
+
+> 스프링부트는 처음 빌드 설정파일에 spring-boot-starter-test 넣으면 다 설치됨.  
+아래와 같은 것들이 포함된다고 한다.
+
+- JUnit — 자바 표준 단위 테스트 프레임워크
+- Spring Test — 스프링 부트 애플리케이션 테스트 지원을 위한 유틸리티
+- AssertJ — 어셜선 라이브러리
+- Hamcrest — 유용한 매처를 지원하는 객체 라이브러리
+- Mockito — 자바 모킹 프레임워크
+- JSONassert — JSON 어셜션 라이브러리
+- JsonPath — JSON 구조를 탐색할 때 유용한 라이브러리
