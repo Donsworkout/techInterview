@@ -174,6 +174,8 @@ Persistence Framework 는 두가지가 있다.
 - 대표적인 예로는 Mybatis 이고, 실제 SQL을 명시해 주어야 한다.
 - 직접 SQL을 많이 만져야 하는 쿼리가 있는 경우에 좋다.  
 - XML 파일에 쿼리 쓰고 @Autowired 하는 방식 
+> SQL Mapper의 Query는 xml로 관리되어지기 때문에 유지보수 과정에서 문제가 발생했습니다. 빌드 과정에서 오류를 발생시키지 않기 때문에 최악에는 SQL Query과 관련된 모든 Controller/Business/DAO Layer를 찾아서 유지보수 해야했습니다.
+
 
 #### 2. ORM (Object - Relation Mapping)
 - 객체와 RDB 테이블의 데이터를 자동으로 매핑해 주는 도구
@@ -198,7 +200,7 @@ Persistence Framework 는 두가지가 있다.
 #### 단점 : 
 - JPA의 내장 메소드로 해결되지 않는 쿼리가 많다.
 - 자주 사용되는 대형 쿼리는 별도의 튜닝이 필요한 경우가 있다. 
-- 최적화된 SQL 쿼리를 사용할때는 MyBatis 가 낫다.
+- 최적화된 SQL 쿼리를 사용할때는 MyBatis 가 낫다. (배우기 어렵)
 - 아래 링크 참조   
 https://gmlwjd9405.github.io/2018/12/25/difference-jdbc-jpa-mybatis.html
 - ORM에 대한 개발자들의 생각   
@@ -265,3 +267,10 @@ https://d2.naver.com/helloworld/5626759
 - Mockito — 자바 모킹 프레임워크
 - JSONassert — JSON 어셜션 라이브러리
 - JsonPath — JSON 구조를 탐색할 때 유용한 라이브러리
+
+## 10. JpaRepository save vs saveAll
+- save는 트랜잭션 하나에 한개 insert
+- saveAll은 트랜잭션 하나에 여러개 insert  
+-> 트랜잭션 절약 
+- saveAll 은 Batch 개수 설정도 가능
+spring.jpa.properties.hibernate.jdbc.batch_size=4
