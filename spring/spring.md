@@ -84,6 +84,41 @@
 참고 : 
 https://itstory.tk/entry/Gof-%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4-Strategy%EC%A0%84%EB%9E%B5-%ED%8C%A8%ED%84%B4
 
+### 2.1. DI의 유형
+- 생성자로 주입하자! (field 선언은 private final 로)
+- POJO 스러울수록 좋다.
+- 생성자가 하나이면 심지어 @Autowired 안써도 된다.
+
+
+~~~java
+public class SpringTest {
+// final 키워드는 생성자 초기화 필수라는 뜻 (세터 불가)
+      private final SpringTestService service;
+     
+// 필드 주입
+      @Autowired
+      private Spring spring;
+// 생성자 주입 
+      @Autowired
+      public SpringTest(SpringTestService service){
+            this.service = service;
+      }
+}
+~~~
+~~~java
+public class FooService {
+ 
+    private FooFormatter fooFormatter;
+// 아래가 setter (method) 를 통한 주입
+    @Autowired
+    public void setFooFormatter(FooFormatter fooFormatter) {
+            this.fooFormatter = fooFormatter;
+    }
+}
+~~~
+> 내가 프로젝트에서 필드 주입을 썼는데 그것이 좋은 방법은 아니란다. 단일 책임 원칙에 위배되는 짓을 하고있을지 모르기 떄문 ..  
+생성자는 파라미터가 많아질수록 더 드러나므로 경각심이 드러난다.
+
 ### 3. AOP (Aspect Oriented Programming)
 > 자주 쓰는데 계속 코드에 나타나는 애들 관리하기 위한 것으로 그 예에는,
 log나 권한체크, 예외처리 등이 있다.  
