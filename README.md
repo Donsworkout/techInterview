@@ -1,10 +1,18 @@
 ## TO DO
 
-1. JAVA  
-[상세 보기](https://github.com/Donsworkout/techInterview/blob/master/java/java.md)
+1. JAVA Language  
+
+    alpha 1.0 : [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/java/java.md)
+
+    alpha 2.0 : [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/java/java_2.md)
 
 2. SPRING  
-[상세 보기](https://github.com/Donsworkout/techInterview/blob/master/spring/spring.md)
+
+    alpla 1.0 : [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/spring/spring.md)
+
+    alpha 2.0 : [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/spring/spring_2.md)
+
+    intermediate 1.0 : [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/spring/spring_intermediate.md)
 
 3. OOP와 디자인 패턴  
 [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/oop/oop.md)
