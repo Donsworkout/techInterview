@@ -219,3 +219,101 @@ let c
 
 ### 7. ES6 에서 추가된 기능 
 https://jsdev.kr/t/es6/2944
+
+ES6 에서 추가된 주요 기능
+1. Arrows (화살표 함수)
+~~~js
+var evens = [2, 4, 6, 8,];
+
+// Expression bodies (표현식의 결과가 반환됨)
+var odds = evens.map(v => v + 1);   // [3, 5, 7, 9]
+var nums = evens.map((v, i) => v + i);  // [2, 5, 8, 11]
+var pairs = evens.map(v => ({even: v, odd: v + 1})); // [{even: 2, odd: 3}, ...]
+
+// Statement bodies (블럭 내부를 실행만 함, 반환을 위해선 return을 명시)
+nums.forEach(v => {
+  if (v % 5 === 0)
+    fives.push(v);
+});
+~~~
+
+2. Classes  
+ES6 클래스는 기존 프로토타입 기반 객체지향 패턴을 더 쉽게 사옹할 수 있도록 함
+
+~~~js
+class SkinnedMesh extends THREE.Mesh {
+  constructor(geometry, materials) {
+    super(geometry, materials);
+
+    this.idMatrix = SkinnedMesh.defaultMatrix();
+    this.bones = [];
+    this.boneMatrices = [];
+    //...
+  }
+  update(camera) {
+    //...
+    super.update();
+  }
+  get boneCount() {
+    return this.bones.length;
+  }
+  set matrixType(matrixType) {
+    this.idMatrix = SkinnedMesh[matrixType]();
+  }
+  static defaultMatrix() {
+    return new THREE.Matrix4();
+  }
+}
+~~~
+
+3. Let, Const  
+- var의 스코프는 전체 외부 함수까지이다.
+- let은 변수를 선언한 블록과 그 내부 블록들에서 유효
+
+4. Iterator / Generator  
+https://infoscis.github.io/2018/01/31/ecmascript-6-iterators-and-generators/
+
+> 많은 프로그래밍 언어는 컬렉션에서 위치를 추적하기 위해 변수가 필요한 for 루프를 사용하여 데이터를 반복하는 것에서 컬렉션의 다음 항목을 반환하는 Iterator 객체를 사용하는 방식으로 전환했다.  
+Iterator를 사용하면 데이터 컬렉션을 쉽게 처리할 수 있어 ES6 에서는 Iterator를 JavaScript에 추가했습니다.  
+Iterator는 새로운 Array 메서드 및 새로운 타입의 컬렉션 (Set 및 Map)과 결합하여 데이터를 효율적으로 처리할수 있는 핵심 요소이며, 이러한 부분은 JavaScript의 여러곳에서 찾아볼 수 있다.  
+또한 Iterator와 함께 작동하는 새로운 for-of 루프가 있으며, Spread (...) 연산자에서도 Iterator를 사용할 수 있다.  
+그리고 Iterator는 비동기 프로그래밍을 더 쉽게 만들수 있게 한다.
+
+
+
+5. Proxy
+> Spring AOP 처럼 사용 가능
+~~~js
+// Proxying a function object
+var target = function () { return 'I am the target'; };
+var handler = {
+  apply: function (receiver, ...args) {
+    return 'I am the proxy';
+  }
+};
+
+var p = new Proxy(target, handler);
+p() // 'I am the proxy';
+~~~
+
+6. Promises
+>  Promise는 미래에 생성되는 값을 나타내는 일급 객체이다.
+
+7. Reflect API
+~~~js
+class Greeting {
+    constructor(name) {
+        this.name = name;
+    }
+
+    greet() {
+      return `Hello ${name}`;
+    }
+}
+
+function greetingFactory(name) {
+    return Reflect.construct(Greeting, [name], Greeting);
+}
+
+greetingFactory('a'); // Greeting {name: "a"}
+~~~
