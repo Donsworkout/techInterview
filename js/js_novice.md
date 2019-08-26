@@ -62,6 +62,7 @@ https://opentutorials.org/course/743/4650
     }
     // > Syntax Error!
     ~~~
+    
 ### 4. 익명함수와 IIFE (immediately-invoked function expression)
 
 #### 익명함수 
@@ -98,11 +99,54 @@ function() {console.log("donsdev")}; // 함수 리터럴
 ~~~
 
 ### 5. 클로저 (Closure)
+
+먼저 **일급 함수** 에 대한 이해가 필요하다.  
+자바스크립트는 일급 함수를 지원하므로 함수를 변수에 저장하거나, 파라미터를 함수로 넘기고, 함수에서 함수를 반환하는 것이 가능하다.
+
+아래를 참고하자
+
+~~~js
+var global_name = "홍길동";
+
+function makePrinter() {
+    var outer_name = "김철수";
+
+    function printName() {
+        var inner_name = "김영희";
+        console.log(global_name);
+        console.log(outer_name);
+        console.log(inner_name);
+    }
+
+    return printName;
+}
+
+var print = makePrinter();
+print();
+~~~
+
+결과
+~~~
+홍길동
+김철수
+김영희
+~~~
+
+아래 부분에서 print 변수에 할당된 것이 **클로저** 이다.  
+~~~js
+var print = makePrinter();
+~~~
+
+여기서 포인트는 print() 실행시, outer_name 을 그대로 가지고 출력한다는 것이다.  
+따라서 함수 안에 있는 함수인 클로저는 자신을 포함하고 있는 맥락(외부함수)의 인자, 지역변수를 기억하고 있다 라는 것이다. (makePrinter() 를 했는데도 살아있다)  
+이러한 변수들을 **자유 변수** 라고 한다.
+
+클로저가 생성될 시점, 그 맥락의 지역 변수들을 자유 변수로 만드는 것을 (뭔가 그 상태 그대로 급냉하는 느낌) **캡쳐(capture)** 라고 한다. 이러한 자유변수들은 외부 접근에 의해 참조할 수 없으며, 오직 해당 closure을 이용해서만 접근할 수 있다. 객체 지향의 private 멤버 변수 같은 느낌을 가진다.
+
 From MDN :
 > 클로저는 독립적인 (자유) 변수를 가리키는 함수이다. 또는, 클로저 안에 정의된 함수는 만들어진 환경(Scope)을 ‘기억한다’  
-쉽게 말해, 함수 안의 함수라고 할 수 있다.
 
-? 바로 코드를 보자
+**또 다른 예**
 
 ~~~js
 function getClosure() {
@@ -119,7 +163,6 @@ console.log(closure()); // 'variable 1'
 getClosure 함수는 함수를 반환한다. 그리고 **반환된 함수**는 getClosure 의 스코프에서 선언된 변수를 참조하고 있다. 또한 참조된 변수는 함수 실행이 끝나고 반환되었다고 해서 사라지지 않았고 아래 함수의 사용에서 제대로 된 값을 반환하고 있다.
 
 여기서 반환된 함수가 **클로저** 이다.
-
 
 ### 6. var, let, const 
 
