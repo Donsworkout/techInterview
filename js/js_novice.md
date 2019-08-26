@@ -62,7 +62,7 @@ https://opentutorials.org/course/743/4650
     }
     // > Syntax Error!
     ~~~
-    
+
 ### 4. 익명함수와 IIFE (immediately-invoked function expression)
 
 #### 익명함수 
@@ -189,6 +189,33 @@ getClosure 함수는 함수를 반환한다. 그리고 **반환된 함수**는 g
     console.log('after loop i is', i) 
     // ReferenceError: i is not defined
     ~~~
+
+    var은 변수 재선언이 되고, 호이스팅 때문에 아래와 같은 문제가 있었다.
+    ~~~js
+    // 이미 만들어진 변수이름으로 재선언했는데 아무런 문제가 발생하지 않는다.
+    var a = 'test'
+    var a = 'test2'
+
+    // hoisting으로 인해 ReferenceError에러가 안난다.
+    c = 'test'
+    var c
+    ~~~
+
+    따라서 생긴것이 let 과 const 이다.
+#### 2. let / const 
+- let 은 변수 재선언이 불가하고, 재할당은 가능하다.
+- const 는 재선언 및 재할당 둘다 불가하다.
+
+let, const가 hoisting이 아예 발생하지 않는것은 아니다.  
+var이 function-scoped로 hoisting 이 되었다면,  
+let, const는 block-scoped 단위로 hoisting이 일어난다.
+
+~~~js
+c = 'test' // ReferenceError: c is not defined
+let c
+~~~
+위에 코드에서 ReferenceError가 발생한 이유는 호이스팅이 발생하지 않은 것이 아니라 **tdz(temporal dead zone)** 때문이다.  
+또한 const 는 선언과 동시 할당이 필수이다.  
 
 ### 7. ES6 에서 추가된 기능 
 https://jsdev.kr/t/es6/2944
