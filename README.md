@@ -27,3 +27,5 @@
 
 6. OS   
 [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/os/os.md)
+
+7. 자바스크립트 

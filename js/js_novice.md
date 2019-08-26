@@ -1,0 +1,151 @@
+## JavaScript 기본 
+https://opentutorials.org/course/743/4650
+
+> 자바스크립트는 본래 웹 페이지를 동적으로 제어하기 위해 만들어진 언어
+
+### 1. ECMAScript
+자바스크립트 표준안, ESX 로 표현된다.
+
+### 2. Features / Grammar
+1. == 와 ===  
+    - == 은 값이 같은지 비교
+    - === 은 값, 타입 등이 같은지 모두 비교 
+    - == 은 java 의 equals, === 은 java 의 == 이라고 볼 수 있음
+
+2. if / while / for 등 일반적인 조건문 / 반복문 다 있음
+
+### 3. Hoisting
+> 끌어올리기, 호이스트는 변수의 정의가 범위에 따라 선언과 할당으로 분리되는 것을 말한다.  
+함수 내에서 변수가 정의되었다면, 선언이 함수의 최상위로  
+함수 밖 전역에서 변수가 정의되었다면, 선언이 전역 context 의 최상위로 변경된다.
+
+1. 변수 호이스팅
+
+    **코드로 보자**
+    ~~~js
+    // 1)
+    // 아래의 함수는 에러가 나지 않는다.
+    function() {
+        console.log(x);
+        var x = 100;
+    }
+
+    // 2)
+    // 아래와 같이 선언과 할당이 분리되어 
+    // 선언이 최상위 맥락으로 올라가는 것인 Hoist
+    function() {
+        var x;
+        console.log(x);
+        x = 100;
+    }
+    ~~~
+
+    1번 함수에서는 오류가 나지 않는다 (선언을 자바스크립트 엔진이 가장 최우선으로 해석)  
+    그러나 값은 100이 아니라 undefined 로 출력된다 (할당은 런타임에 되기 때문)
+
+2. 함수 호이스팅
+    > 함수 선언이 함수 실행보다 뒤에 있더라도 자바스크립트 엔진이 함수 선언을 끌어올린다.
+    아래와 같은 상황에서 "foooooo" 는 정상적으로 출력된다.
+    ~~~js
+    foo();
+    function foo() {
+        console.log("foooooo");
+    }
+    // > foooooo
+    ~~~
+
+    > 그러나 할당의 경우에는 Hoisting 이 안된다는 것을 기억하지 
+    ~~~js
+    foo();
+    var foo = function(){
+        console.log("foooooo");
+    }
+    // > Syntax Error!
+    ~~~
+### 4. 익명함수와 IIFE (immediately-invoked function expression)
+
+#### 익명함수 
+> 이름이 없는 함수, 자바스크립트에서는 이름 없는 함수 리터럴을 변수에도 할당이 가능하다.
+~~~js
+const add = function (a, b) { return a + b };
+~~~
+
+그러나 아래와 같은 선언은 불가하다.  
+선언부가 없으면 이를 사용할 맥락이나 이를 할당해줄 변수가 무조건 필요하다.  
+*(Hoisting을 할건지, 아니면 지금 바로 쓸껀지)*
+~~~js
+function (a, b) { return a + b } 
+// Uncaught SyntaxError: Unexpected token (
+~~~
+
+그래서 익명 함수를 쓰려면 아래 두가지 경우로 쓸 수 있다.
+~~~js
+// 1. 변수에 함수 리터럴 할당하기 
+const add = function (a, b) { return a + b };
+
+// 2. 즉시 사용하기 (IIFE - 아래 참조)
+(function(a, b) { return a + b })(1, 2);
+~~~
+
+#### IIFE (immediately-invoked function expression) 
+> 정의와 동시에 즉시 실행되는 함수 
+
+함수를 즉시 실행시킨다.  
+IIFE 의 일반적인 형태는 아래와 같다. (함수 리터럴을 괄호로 감싼 형태)
+~~~js
+function() {console.log("donsdev")}; // 함수 리터럴
+(function() {console.log("donsdev")})(); // IIFE
+~~~
+
+### 5. 클로저 (Closure)
+From MDN :
+> 클로저는 독립적인 (자유) 변수를 가리키는 함수이다. 또는, 클로저 안에 정의된 함수는 만들어진 환경(Scope)을 ‘기억한다’  
+쉽게 말해, 함수 안의 함수라고 할 수 있다.
+
+? 바로 코드를 보자
+
+~~~js
+function getClosure() {
+  var text = 'variable 1';
+  return function() {
+    return text;
+  };
+}
+
+var closure = getClosure();
+console.log(closure()); // 'variable 1'
+~~~
+
+getClosure 함수는 함수를 반환한다. 그리고 **반환된 함수**는 getClosure 의 스코프에서 선언된 변수를 참조하고 있다. 또한 참조된 변수는 함수 실행이 끝나고 반환되었다고 해서 사라지지 않았고 아래 함수의 사용에서 제대로 된 값을 반환하고 있다.
+
+여기서 반환된 함수가 **클로저** 이다.
+
+
+### 6. var, let, const 
+
+#### 1. var
+- function-scoped
+    > 함수 안까지만 확장되는 스코프 
+    ~~~js
+    // var 변수가 호이스팅 되어 정상적으로 j가 출력된다.
+    for(var j=0; j<10; j++) {
+        console.log('j', j)
+    }
+    console.log('after loop j is ', j) 
+    // after loop j is 10
+
+
+    // 아래의 경우에는 function 스코프까지만 확장되어
+    // 함수 밖에서 i 값을 참조할 수 없다.
+    function counter () {
+        for(var i=0; i<10; i++) {
+            console.log('i', i)
+        }
+    }
+    counter()
+    console.log('after loop i is', i) 
+    // ReferenceError: i is not defined
+    ~~~
+
+### 7. ES6 에서 추가된 기능 
+https://jsdev.kr/t/es6/2944
