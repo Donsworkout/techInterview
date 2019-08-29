@@ -2,9 +2,7 @@
 
 1. JAVA Language  
 
-    alpha 1.0 : [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/java/java.md)
-
-    alpha 2.0 : [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/java/java_2.md)
+    [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/java/java.md)
 
 2. SPRING  
 
