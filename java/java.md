@@ -20,9 +20,9 @@
 ![266F3C445805EF0A31](https://user-images.githubusercontent.com/26560119/58601083-3c648e00-82c2-11e9-808a-cd6537dfa07d.png)
 
 
-- JIT(Just In Time)으로 컴파일된 class 파일은 bytecode(중간언어) 로 만들어 지는데, bytecode를 OS에 맞는 기계어로 변환해주는 역할 (c++ 은 빌드때 바로 기계어로 감)
+- 컴파일된 class 파일은 bytecode(중간언어) 로 만들어 지는데, bytecode를 OS에 맞는 기계어로 변환해주는 역할 (c++ 은 빌드때 바로 기계어로 감)
 
-- JVM에 있는 클래스로더가 런타임때 바이트코드를 받아 자바 인터프리터로 기계어로 해석하고 실행한다.
+- JVM에 있는 클래스로더가 런타임때 바이트코드를 받아 자바 인터프리터 / JIT 컴파일러로 기계어로 해석하고 실행한다.
 
 - 이래서 자바가 OS 독립적이라고 하는 것이다. 
 
@@ -30,7 +30,7 @@
 
 <img width="826" alt="스크린샷 2019-05-30 오전 10 11 18" src="https://user-images.githubusercontent.com/26560119/58601331-4cc93880-82c3-11e9-86f5-49c420d82392.png">
 
-1) class loader 가 빌드된 자바 목적파일 (class) 을 메모리로 로드한다.
+1) class loader 가 빌드된 자바 목적파일 (class / 바이트코드) 을 메모리로 로드한다.
 
 2) Execution Engine이 적재된 바이트 코드를 읽어 기계어로 변환하는데, 처음에는 interpreter을 이용하여 한줄 씩 명령어를 실행하다가, 나중에는 JIT 컴파일러를 이용한다.
 
