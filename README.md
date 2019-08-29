@@ -35,3 +35,5 @@
     - MSA
 
     - Clean Architecture
+
+9. 자바스크립트 
