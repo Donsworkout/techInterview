@@ -28,5 +28,10 @@
 6. OS   
 [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/os/os.md)
 
-6. 코드리뷰  
-[상세 보기](https://github.com/Donsworkout/techInterview/blob/master/codeReview/hackdayCode.md)
+7. GitFlow
+
+8. Architecture
+
+    - MSA
+
+    - Clean Architecture
