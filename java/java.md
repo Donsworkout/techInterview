@@ -76,7 +76,18 @@
 => 결론 : GC를 잘 모니터링 해야 한다. (stop the world 조심)
 
 
-## 2. Java EE / SE / ME 차이
+## 2. Java 언어의 다양한 특징 
+1. 자바는 변수를 사용하기 직전까지 변수 선인 시기를 늦추는 것을 좋은 방식으로 여긴다.
+
+2. 상수는 final 키워드를 쓰며, 컴파일 타임에 할당되어 수정할 수 없다 (immutable)
+    > 참고로 System.out.println 의 out은 System 클래스에 선언된 상수임
+    ~~~java
+    public static final PrintStream out
+    ~~~
+
+3. 
+
+## 3. Java EE / SE / ME 차이
 ### 1) 자바 SE (Standard Edition)
 데스크톱, 서버, 임베디드를 위한 표준 자바 플랫폼, SE가 다른 에디션의 기반이다.  
 JDBC뜽 기본적인 기능이 들어가 있음 
@@ -87,8 +98,58 @@ JDBC뜽 기본적인 기능이 들어가 있음
 ### 3) 자바 ME (Micro Edition)  
 폰, 셋톰박스 등에서 java 이용할 수 있도록 만들어진 플랫폼 
 
+## 3. 자바의 Wrapper Class 
+자바의 제너릭 클래스에는 불편한 제약이 하나 있는데,  
+int, char 같은 기본 자료형을 타입 파라미터로 사용할 수 없다.    
+(제너릭을 사용할때 타입 파라미터가 무조건 클래스이기 때문)  
+이에 대한 해결책으로 Wrapper Class 를 사용한다.  
+흔히 보는 Integer, Byte, Short, Long, Boolean 같은 것들이 이에 해당한다.
 
-## 3. 자바 Array / List
+~~~java 
+// ArrayList<int> <- 이런 형태는 절대 불가 
+ArrayList<integer> numbers = new ArrayList<>();
+~~~
+
+기본 타입과 Wrapper 클래스 사이는 자동 형 변환이 가능하다.  
+다른것은 별로 신경쓰지 않아도 되는데, Wrapper 클래스에서도 == 는 객체 참조를 비교한다는 사실을 잊지 말자 
+
+
+## 4. 자바의 자료구조 
+### Array
+~~~java
+String[] names = new String[100];
+~~~ 
+**new 연산자로 배열 생성 시**
+- 숫자 타입의 배열은 0으로 채워진다 
+- boolean 의 배열은 모두 false 로 채워진다.
+- 객체 배열은 null 참조 
+
+### Collection / Map
+https://hackersstudy.tistory.com/26
+https://onsil-thegreenhouse.github.io/programming/java/2018/02/18/java_tutorial_1-22/
+
+![collectionsTable](https://user-images.githubusercontent.com/26560119/64118945-b3cf1f80-cdd3-11e9-8cfd-b8e5061a5ce6.png)
+
+> 대표적으로는 사용 용도에 따라 List, Set, Map, Queue 으로 나눌 수 있다.
+
+### 자료구조 인터페이스의 특징
+> List, Set, Map, Queue 은 인터페이스이다.
+
+1. List  
+구현 클래스 : LinkedList, Stack, Vector  
+간단 설명 : 순서가 있는 데이터의 집합, 데이터의 중복을 허용한다.
+
+2. Set   
+구현 클래스 : HashSet, TreeSet  
+간단 설명 : 순서를 유지하지 않는 데이터의 집합, 데이터의 중복을 허용하지 않는다. 
+
+3. Map  
+구현 클래스 : HashMap, TreeMap, HashTable  
+간단 설명 : 키(key)와 값(value)의 쌍으로 이루어진 데이터의 집합이다.  
+순서는 유지되지 않고, 키는 중복을 허용하지 않으며 값의 중복을 허용한다.
+
+4. Queue 
+
 ### Array
 > 일반적으로 배열은 크기가 확정되어 있고 인덱스가 중요할 때, 효율이 좋아 많이 쓰인다.
 - 인덱스를 활용하여 빠른 조회가 가능하다.
