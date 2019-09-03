@@ -129,6 +129,130 @@ javac 컴파일러는 항상 현재 디렉터리에서 파일을 찾지만, 자�
 
 **"너 이 메서드 구현 안하면, 컴파일 안해준다 .."**
 
+그리고 Java 8 이 나오기 전까지는 인터페이스에는 실행 블록이 없는 추상 메서드만 선언이 가능했다. 그러나 지금은 디폴트 메서드나 정적 메서드 선언이 가능하다. 
+
+### 5.1 Java 8 에서 인터페이스에서 가질 수 있는 것들 
+1.1 상수 필드
+~~~java
+public interface Parent{
+    public static final MAX_VALUE = 100;
+    public static final MIN_VALUE = 0;
+}
+~~~
+
+1.2 추상 메서드
+~~~java
+public interface Parent{
+    // 상수 필드
+    public static final MAX_VALUE = 100;
+    public static final MIN_VALUE = 0;
+    
+    // 추상 메소드
+    public abstract void run();
+}
+~~~
+
+1.3 디폴트 메서드
+~~~java
+public interface Parent{
+    // 상수 필드
+    public static final MAX_VALUE = 100;
+    public static final MIN_VALUE = 0;
+    
+    // 추상 메소드
+    public abstract void run();
+    
+    // 디폴트 메소드 : 실행 내용까지 작성이 가능하다.
+    public default void setState(boolean state){
+        
+        if(state){
+            System.out.println("현재 상태는 정상입니다");
+        }else{
+            System.out.println("현재 상태는 비정상입니다");
+        }
+        
+    }
+}
+~~~
+
+1.4 정적 메서드
+~~~java
+public interface Parent{
+    // 상수 필드
+    public static final MAX_VALUE = 100;
+    public static final MIN_VALUE = 0;
+    
+    // 추상 메소드
+    public abstract void run();
+    
+    // 디폴트 메소드 : 실행 내용까지 작성이 가능하다.
+    public default void setState(boolean state){
+        
+        if(state){
+            System.out.println("현재 상태는 정상입니다");
+        }else{
+            System.out.println("현재 상태는 비정상입니다");
+        }
+        
+    }
+    
+    // 정적 메소드
+    public static void change(){
+        System.out.println("상태를 변경합니다.");
+    }
+}
+~~~
+
+### 5.2 타입 변환
+
+2.1. 자동 타입 변환(Promotion)  
+
+~~~java
+Interface interface = new 구현체(); 
+// 위와같은 경우 인터페이스에 선언된 메서드만 사용이 가능하다
+~~~
+
+2.2. 강제 타입 변환(Casting)  
+
+구현 객체가 인터페이스 타입으로 **자동 타입 변환** 되는 경우  
+인터페이스에 선언된 메소드만 사용이 가능한 반면,  
+
+인터페이스 구현 클래스에 선언된 필드와 메소드를 사용해야 하는 경우에는,  
+**강제 타입 변환** 을 이용하여 다시 구현 클래스 타입으로 변환해야한다.
+
+~~~java
+Interface interface = new 구현체(); 
+구현체 imp = (구현체) interface;
+~~~
+
+강제 타입 변환시 instanceof 연산자로 확인하고 안전하게 강제 타입 변환을 할 것.
+
+~~~java
+if (car instanceof Bus){
+    Bus bus = (Bus)car;
+}
+~~~
+
+### 5.3 Runnable Interface
+> 스레드의 테스크를 정의하려면 Runnable 인터페이스를 구현해야 한다.  
+Runnable Interface는 메서드(run)를 한개만 갖는다.
+
+~~~java
+class ThreadTask implements Runnable {
+    public void run() {
+        for (int i = 0; i < 1000; i++) {
+            System.out.println("Some Task");
+        }
+    }
+}
+~~~
+
+이 태스크를 새로운 스레드에서 실행하려면 Runnable 인터페이스 구현체를 스레드 변수에 담아 실행시키면 된다.
+~~~java
+Runnable task = new ThreadTask();
+Thread thread = new Thread(task);
+thread.start();
+~~~
 
 ## 4. 자바의 자료구조 
 ### Array
