@@ -111,7 +111,7 @@ public class ThreadConfig {
 
 4. **유관 라이브러리**
 - 스레드 환경에 안전한 collection 을 사용한다.
-> java.util.concurrent 패키지가 제공하는 클래스 적극 이용 (ConcurrentHashMap)
+    > java.util.concurrent 패키지가 제공하는 클래스 적극 이용 (ConcurrentHashMap)
 - 서로 무관한 작업을 수행할 때는 executor 프레임워크 사용 
 - 가능하다면 스레드가 차단 되지 않는 방법을 사용 
 

@@ -21,7 +21,7 @@
 
 
 - 컴파일된 class 파일은 bytecode(중간언어) 로 만들어 지는데, bytecode를 OS에 맞는 기계어로 변환해주는 역할 (c++ 은 빌드때 바로 기계어로 감)
-
+> bytecode 는 컴파일 후 나오는 것으로 JVM 이 이해할 수 있는 코드 (클래스 파일)
 - JVM에 있는 클래스로더가 런타임때 바이트코드를 받아 자바 인터프리터 / JIT 컴파일러로 기계어로 해석하고 실행한다.
 
 - 이래서 자바가 OS 독립적이라고 하는 것이다. 
@@ -343,6 +343,35 @@ https://onsil-thegreenhouse.github.io/programming/java/2018/02/18/java_tutorial_
 List<String> list = new ArrayList<>();
 ~~~
 
+#### 참고 ) Vector 와 ArrayList 의 차이
+#### Vector
+1. Vector 은 사실 레거시 클래스!
+    - 그러나 현재는 재구성 되어 Collection 프레임워크와 완벽 호환가능
+2. **동적배열** 을 구현한다.
+3. 배열과 같이 index로 접근한다.
+4. 동기화되어 (한번에 한스레드) Thread-Safe 하다
+
+#### ArrayList
+1. Collection 프레임워크
+2. Vector과 마찬가지로 동적 배열 구현
+3. 표준 배열보다는 느리지만, 많은 조작을 제공
+4. 동기화 되어있지 않아서, 동기화 시키려면 syncronized 키워드 추가해야 함
+
+#### 차이점
+1. 동기화  
+Vector은 동기화, ArrayList 는 X (동시에 여러 스레드 접근가능)
+
+2. Thread Safe  
+1번과 비슷한 맥락, ArrayList 는 스레드 프로그래밍의 경우에서는 명시적 동기화가 필요
+
+3. Performance  
+당연히 동기화를 고려하지 않는 ArrayList가 빠름
+
+4. 동적 사이즈 추가 갯수 다름  
+    - ArrayList는 기존배열 사이즈 대비 50% 만 증가하고
+    - Vector은 사이즈 대비 100% 가 증가한다
+
+    **따라서 스레드 환경이 아닐때는 걍 ArrayList 쓰면 된다.**
 ### 2. Iterator
 > 각 컬렉션에는 어떤 순서로 요소를 순회하는 메서드가 무조건 있다.  
 Collection 의 부모 인터페이스인 Iterable<T>는 다음과 같은 메서드를 제공한다
@@ -393,7 +422,7 @@ for (String element : coll) {
 ### 단점 
 - 조금 느리다. (c++, c에 비해 느리단 말임, 당연히 portability 와 Trade-off)
 
-## 9. 자바 언어 기본
+## 9. 자바 언어 기타
 ### 1. final 과 static final 의 차이
 1. static
 - 자바에서 static은 클래스 멤버를 설정하는 키워드이다.
@@ -527,3 +556,107 @@ RuntimeException 빼고는 모든 예외가 이에 해당한다. 또한 Checked 
 수신자가 송신받은 데이터를 제때 처리하지 못하는 상황 (네트워크가 느리거나 서버의 CPU가 max인 경우 등) 에서 송신자가 계속 보내는 경우
 
 3. **SocketTimeoutException** (IOException 자손 클래스)  
+
+### 8. String, StringBuilder, StringBuffer 차이
+> 이 셋은 모두 문자열을 저장하고 관리하는 클래스이다. 뭐가 다를까?
+
+#### 1. String
+- String 은 **immutable** 하다.
+- 짧은 데이터 concat 같은 경우에 적절하다.
+- immutable 하므로 당연히 Thread-Safe 하다.
+- 그러나 concat 시 기존 String에 다른 String을 더하는 것이 아니라, 새로 아예 복사해서 만드는 것이기 때문에 연산할 문자열의 길이가 길 떄에는 **성능상** 사용하지 않는것이 좋다.
+
+#### 2. StringBuffer와 StringBuilder
+- StringBuffer와 StringBuilder 클래스가 제공하는 메서드는 서로 동일
+- String 과 달리 concat 시 기존 버퍼의 크기를 늘리는 방식으로 동작
+- StringBuffer 는 메서드별로 Synchronized Keyword 가 존재함  
+=> 동기화 지원 (Thread-Safe)
+- StringBuilder 은 동기화 미지원
+- 성능만 보면 StringBuilder 가 제일 좋지만, 보통 스레드 안전을 위해 StringBuffer을 쓰는게 나을 것 같다.
+
+
+## 10. 병행 태스크 (The Parallel)
+~~~java
+public interface Runnable {
+    void run();
+}
+~~~
+
+이것은 Runnable 인터페이스이다.  
+run 메서드에 들어 있는 코드는 Thread 안에서 실행된다.
+
+**Thread** 는 ***일련의 명령어를 실행하는 메커니즘*** 이다. 보통은 운영체제에서 제공하며, 별도의 프로세서나 같은 프로세서의 서로 다른 타임 슬라이스를 이용해 여러 Thread 가 동시에 실행된다.
+
+단, 가벼운 작업은 스레드로 넣는것이 비효율적이다. 스레드 시작하는데 드는 오버헤드가 크기 때문이다. 강도 높은 계산일 경우에는 태스크별로 스레드를 사용하는 대신, 프로세서별로 스레드를 하나씩 사용해서 스레드 간 **스위칭 오버헤드** 를 피하는 것이 좋다.  
+
+### 1. Executor 
+> Executor 클래스에는 다양한 유형의 실행자들을 만들어 내는 **팩토리 메서드**가 있다.  
+**팩토리 메서드** 는 타입에 따른 객체의 생성을 생성자 자체가 아닌 팩토리 클래스에게 맡기는 것이다. 
+#### 1) 유휴 스레드를 이용한 최적화된 스레드풀 제공
+~~~java
+exec = Executor.newCachedThreadPool();
+~~~
+
+#### 2) 고정 개수 스레드 풀
+~~~java
+exec = Executor.newFixedThreadPool(스레드_개수);
+~~~
+여기서 Thread 개수는 가용 프로세서 개수로 부터 구하면 된다.
+~~~java
+int count = Runtime.getRuntime().availableProcessors();
+~~~
+
+### 2. 스레드 안전성 (Thread Safe)
+
+## 11. Java 8 에서 추가된 기능
+### 1. Stream API (반복에서의 더 고수준의 추상화)
+- 파이프라인을 만드는데 필요한 API를 제공하게 되었다. 
+- 기존에는 한 번에 한 항목을 처리했지만 작업을 고수준으로 추상화해 일련의 스트림으로 만들어 처리할 수 있다는 것
+- 스레드라는 복잡한 작업을 사용하지 않고도 **파이프라인식 병렬성**을 얻을 수 있게 된 것
+
+~~~java
+import static java.util.stream.Collectors.toList;
+ 
+Map<Currency, List<Transaction>> transactionByCurrencies = 
+transactions.stream()
+            .filter((Transaction t) -> t.getPrice() > 1000) 
+            .collect(groupingBy(Transaction::getCurrency));  
+~~~
+
+이처럼 반복문을 쓰지 않아도 되는 **함수형 코드 표현** 과  
+**고수준의 병렬성 추상화**로 멀티코어를 잘 활용할 수 있도록 도와준다
+
+### 2. 메서드와 람다(익명함수)를 1급 시민으로
+- 1급 시민은 파라미터로 넘겨질 수도 있고 반환될 수 도 있다.
+- 메서드를 파라미터로 전달가능
+    ~~~java
+    File[] hiddenFiles 
+    = new File(".").listFiles(File::isHidden);
+    ~~~
+- 악명함수를 이용하여 함수도 값으로 처리
+    ~~~java
+    (int x) -> x + 1 // x라는 인수로 호출하면 x + 1 을 반환
+    ~~~
+
+### 3. Default Method
+> Java8에는 default 라는 새로운 키워드를 인터페이스 규격명세에 추가되어 있다.  
+ 하나의 예로 이전 버전의 자바에서는 List를 구현하는 모든 클래스가 sort 메서드를 구현해야 했지만 Java8부터는 디폴트 sort를 구현하지 않아도 된다.  
+ (인터페이스에 구현이 들어갈 수 있다.)
+
+~~~java
+default void sort(Comparator<? super E> c){
+  Collections.sort(this, c);
+}
+~~~
+
+### 4. Optional Class
+> NullPointer 예외를 피할 수 있는 Optional<T> 클래스도 제공한다.  
+ 이는 값을 갖거나 갖지 않을 수 있는 컨테이너 객체이다.
+
+- 값이 존재한다면 Optional 클래스는 값을 감싼다
+- 값이 없다면 Optional.empty메서드로 Optional을 리턴한다
+
+### 5. CompletaleFuture
+- 두 개의 비동기 계산 결과를 하나로 합친다
+- Future의 기능을 확장시켜준다...
+### 6. New date / time APIs
