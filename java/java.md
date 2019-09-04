@@ -660,3 +660,27 @@ default void sort(Comparator<? super E> c){
 - 두 개의 비동기 계산 결과를 하나로 합친다
 - Future의 기능을 확장시켜준다...
 ### 6. New date / time APIs
+
+## 12. 객체 직렬화 (Serialization)
+> 말그대로 객체를 직렬화하여 전송 가능한 형태로 만드는 것을 의미한다.  
+객체들의 데이터를 연속적인 데이터로 변형하여 Stream 을 통해 데이터를 읽도록 해준다.  
+이것은 주로 객체들을 통째로 파일로 저장하거나 전송하고 싶을 때 주로 사용된다.
+
+- 클래스 직렬화를 원한다면 해당 클래스가 Serializable 인터페이스를 구현하면 된다.
+    ~~~java
+    public class A implements Serializable {
+
+    }
+    ~~~
+
+- 보안 상의 문제나 기타 이유로 멤버변수의 일부를 제외하고 싶다면 transient를 통해 지정할 수 있다.
+
+    ~~~java
+    public class User implements Serializable { 
+        private String id; 
+        private transient String password; 
+        private String email; 
+    }
+    ~~~
+
+- 클래스에서 다른 클래스를 의존하는 경우 의존 클래스도 Serializable 인터페이스를 구현해야 직렬화할 수 있다.
