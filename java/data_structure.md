@@ -66,3 +66,18 @@ HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, header
 ResponseEntity<List<UserInfoDTO>> apiResponse = restTemplate.exchange(URL, HttpMethod.POST, request, new ParameterizedTypeReference<List<UserInfoDTO>>() {});
 return apiResponse.getBody();
 ~~~
+
+### 5. 배열과 리스트의 차이 
+### Array
+> 일반적으로 배열은 크기가 확정되어 있고 인덱스가 중요할 때, 효율이 좋아 많이 쓰인다.
+- 인덱스를 활용하여 빠른 조회가 가능하다.
+- 물리적으로 인접해 있어 cache hit (공간 지역성) 의 가능성이 높아진다.
+- 대신 리스트에 비해 기능이 없다.
+- 가변 배열을 쓰면 기존 배열 그대로 두고 새로운 길이로 배열 할당 후 데이터 복사하고 기존 배열을 삭제한다.
+- 요소 삭제시 메모리가 낭비된다.
+
+### List 
+> 인덱스가 중요하지 않을떄 빈틈없음 데이터의 적재가 가능
+- 순서가 있는 데이터의 모임
+- 배열의 index가 그 배열의 Key 라면, 리스트의 index 는 순서라는 의미 정도이다.
+- 데이터 추가 / 삭제가 많이 일어난다면 리스트가 적합하다.
