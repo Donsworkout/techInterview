@@ -173,16 +173,223 @@
         - 프록시의 사용 목적은 네트워크 캐싱, 조직내의 특정 웹사이트 액세스 방지, 액세스 로그 획득 등이 있다.
 
 ### 3. HTTP Request / Response 헤더
-    
+- HTTP 헤더 - 일반 헤더 (General Header) 
+    - 요청 및 응답 메시지 모두에서 사용 가능한 일반 목적의(기본적인) 헤더 항목
+    - 주요 항목
+        - **Date**: HTTP 메시지를 생성한 일시 
+            - `Date: Sat, 2 Oct 2018 02:00:12 GMT`
+        - **Connection**: 클라이언트와 서버 간 연결에 대한 옵션 설정
+            - `Connection: close` => 현재 HTTP 메시지 직후에 TCP 접속을 끊는다는 것을 알림
+            - `Connection: Keep-Alive` => 현재 TCP 커넥션을 유지
+        - **Cache-Control** 
+            - `Cache-Control: no-store` => 캐시 안쓴다
+            - `Cache-Control: no-cache` =>  모든 캐시를 쓰기 전에 서버에 이 캐시 진짜 써도 되냐 물어보라는 뜻  
+            ... 이 외에도 몇가지 있음
+        - **Pragma**
+            - http 1.0 레거시, 캐시 컨트롤이랑 같음 
+        - **Trailer**
+            - http 헤더 뒤에 임의 추가 가능
+                ~~~
+                HTTP/1.1 200 OK 
+                Content-Type: text/plain 
+                Transfer-Encoding: chunked
+                Trailer: Expires
+                7\r\n 
+                Mozilla\r\n 
+                9\r\n 
+                Developer\r\n 
+                7\r\n 
+                Network\r\n 
+                0\r\n 
+                Expires: Wed, 21 Oct 2015 07:28:00 GMT\r\n
+                \r\n
+                ~~~
+-  HTTP 헤더 - 엔터티 헤더 (Entity Header) 
+    - 요청 및 응답 메시지 모두에서 사용 가능한 Entity(콘텐츠, 본문, 리소스 등)에 대한 설명 헤더 
+    - 주요 항목들
+        - **Content-Type**: 해당 개체에 포함되는 미디어 타입 정보
+            - 컨텐츠의 타입(MIME 미디어 타입) 및 문자 인코딩 방식(EUC-KR,UTF-8 등)을 지정
+            - 타입 및 서브타입(type/subtype)으로 구성 
+            - `Content-Type: text/html; charset-latin-1` => 해당 개체가 html으로 표현된 텍스트 문서이고, iso-latin-1 문자 인코딩 방식으로 표현됨
+        - **Content-Language**: 해당 개체와 가장 잘 어울리는 사용자 언어(자연언어)
+        - **Content-Encoding**: 해당 개체 데이터의 압축 방식
+            - `Content-Encoding: gzip, deflate`
+            - 만일 압축이 시행되었다면, Content-Encoding 및 Content-Length 2개 항목을 토대로 압축 해제 가능 
+        - **Content-Length**: 전달되는 해당 개체의 바이트 길이 또는 크기(10진수)
+        - **Content-Location**: 해당 개체가 실제 어디에 위치하는가를 알려줌
+        - **Content-Disposition**: 응답 Body를 브라우저가 어떻게 표시해야 할지 알려주는 헤더
+            - inline인 경우 웹페이지 화면에 표시되고, attachment인 경우 다운로드
+            - `Content-Disposition: inline`
+            - `Content-Disposition: attachment; filename='filename.csv'`
+        - **Content-Security-Policy**: 다른 외부 파일들을 불러오는 경우, 차단할 소스와 불러올 소스를 명시
+            - *XSS 공격*에 대한 방어 가능 (허용한 외부 소스만 지정 가능)
+            - `Content-Security-Policy: default-src https:` => https를 통해서만 파일을 가져옴
+            - `Content-Security-Policy: default-src 'self'` => 자신의 도메인의 파일들만 가져옴
+            - `Content-Security-Policy: default-src 'none'` => 파일을 가져올 수 없음
+        - **Location**: 리소스가 리다이렉트(redirect)된 때에 이동된 주소, 또는 새로 생성된 리소스 주소
+            - 300번대 응답이나 201 Created 응답일 때 어느 페이지로 이동할지를 알려주는 헤더
+            - 새로 생성된 경우에 HTTP 상태 코드 `201 Created`가 반환됨
+            - `HTTP/1.1 302 Found  Location: /`
+                - 이런 응답이 왔다면 브라우저는 / 주소로 redirect한다.
+        - **Last-Modified**: 리소스를 마지막으로 갱신한 일시
+- HTTP 헤더 내 요청 헤더 (Request Header) 항목
+    - 요청 헤더는 HTTP 요청 메시지 내에서만 나타나며 가장 방대하다.
+    - 주요 항목들
+        - **Host**: 요청하는 호스트에 대한 호스트명 및 포트번호 (***필수***)
+            - Host 필드에 도메인명 및 호스트명 모두를 포함한 전체 URI(FQDN) 지정 필요
+            - 이에 따라 동일 IP 주소를 갖는 단일 서버에 여러 사이트가 구축 가능
+        - **User-Agent**: 클라이언트 소프트웨어(브라우저, OS) 명칭 및 버전 정보
+        - **From**: 클라이언트 사용자 메일 주소 
+            - 주로 검색엔진 웹 로봇의 연락처 메일 주소를 나타냄
+            - 때로는, 이 연락처 메일 주소를 User-Agent 항목에 두는 경우도 있음
+        - **Cookie**: 서버에 의해 Set-Cookie로 클라이언트에게 설정된 쿠키 정보
+        - **Referer**: 바로 직전에 머물었던 웹 링크 주소
+        - **If-Modified-Since**: 제시한 일시 이후로만 변경된 리소스를 취득 요청
+        - **Authorization**: 인증 토큰(JWT/Bearer 토큰)을 서버로 보낼 때 사용하는 헤더
+            - 토큰의 종류(Basic, Bearer 등) + 실제 토큰 문자를 전송
+        - **Origin**
+            - POST 요청 주소
+            - 여기서 요청을 보낸 주소와 받는 주소가 다르면 **CORS 에러** 가 발생
+            - 응답 헤더의 **Access-Control-Allow-Origin**와 관련 
+    - 다음 4개는 주로 HTTP 메세지 Body의 속성 또는 내용 협상용 항목들
+        - **Accept**: 클라이언트 자신이 원하는 미디어 타입 및 우선순위를 알림
+            - `Accept: */*` => 어떤 미디어 타입도 가능
+            - `Accept: image/*` => 모든 이미지 유형
+        - **Accept-Charset**: 클라이언트 자신이 원하는 문자 집합
+        - **Accept-Encoding**: 클라이언트 자신이 원하는 문자 인코딩 방식
+        - **Accept-Language**: 클라이언트 자신이 원하는 가능한 언어
+        - 각각이 HTTP Entity Header 항목 중에 `Content-Type, Content-Type charset-xxx, Content-Encoding, Content-Language`과 일대일로 대응됨
+- HTTP 헤더 내 응답 헤더 (Response Header) 항목
+    - 특정 유형의 HTTP 요청이나 특정 HTTP 헤더를 수신했을 때, 이에 응답한다.
+    - 주요 항목들
+        - **Server**: 서버 소프트웨어 정보
+        - **Accept-Range**
+        - **Set-Cookie**: 서버측에서 클라이언트에게 세션 쿠키 정보를 설정 (RFC 2965에서 규정)
+        - **Expires**: 리소스가 지정된 일시까지 캐시로써 유효함
+        - **Age**: 캐시 응답. max-age 시간 내에서 얼마나 흘렀는지 알려줌(초 단위)
+        - **ETag**: HTTP 컨텐츠가 바뀌었는지를 검사할 수 있는 태그
+        - **Proxy-authenticate**
+        - **Allow**: 해당 엔터티에 대해 서버 측에서 지원 가능한 HTTP 메소드 리스트
+            - 때론, HTTP 요청 메세지의 HTTP 메소드 OPTIONS에 대한 응답용 항목
+                - OPTIONS: 웹서버측 제공 HTTP 메소드에 대한 질의
+            - `Allow: GET,HEAD` => 웹 서버측이 제공 가능한 HTTP 메서드는 GET,HEAD 뿐임을 알림 (405 Method Not Allowed 에러와 함께)
+        - **Access-Control-Allow-Origin**: 요청을 보내는 프론트 주소와 받는 백엔드 주소가 다르면 *CORS 에러*가 발생
+            * 서버에서 이 헤더에 프론트 주소를 적어주어야 에러가 나지 않는다.
+            * `Access-Control-Allow-Origin: www.zerocho.com`
+                * 프로토콜, 서브도메인, 도메인, 포트 중 하나만 달라도 CORS 에러가 난다. 
+            * `Access-Control-Allow-Origin: *`
+                * 보안 박살
+            * 유사한 헤더로 `Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Headers` 등이 있다. 
 ### 4. HTTP Keep-Alive
+HTTP 는 비연결 방식으로 연결을 매번 만들고 끊는 구조이다.  
+이는 많은 비용이 드므로, HTTP 1.1 부터는 Keep-Alive (연결 유지) 를 제공한다.
+
+- HTTP/1.1부터 지원하는 기능으로 TCP 연결을 재사용하는 기능이다.
+- Handshake 과정이 생략되므로 성능 향상을 기대 할 수 있다 (TCP 소켓 세션 유지)
+-  모든 TCP 세션을 무한정 유지할 수는 없으므로 Timeout 및 Max 설정을 통해 관리되어야 한다.
+- 연결된 Socket에 IO 의 Access가 마지막으로 종료된 시점부터 
+정의된 시간까지 Access가 없더라도 세션을 유지하는 구조이다.
+- 정의된 시간내에 Access가 이루어진다면 계속 연결된 상태를 유지할 수 있게 된다.
 
 ### 5. HTTP Status Code
 
+#### 100 - 199 : 정보성 상태 코드
+
+- 100 : 요청의 시작 부분 일부가 받아들여졌으며, 클라이언트는 나머지를 계속 이어서 보내야 함을 의미함
+
+- 101 : 요청자가 서버에 프로토콜 전환을 요청했으며, 서버에서 이를 승인하는 중을 의미함
+
+#### 200 - 299 : 성공 상태 코드
+클라이언트가 요청을 보내면, 요청은 대게 성공함. 서버는 대응하는 성공을 의미하는 각각의 요청에 대응한다.
+
+- 200 : 요청은 정상이고, 본문은 요청된 리소스를 포함하고 있다.
+
+- 201 : 어떠한 생성 작업을 요청받았으며, 생성 작업을 성공하였다.
+
+- 202 : 요청은 받아들여졌으나, 아직 동작을 수행하지 않은 상태로 요청이 적절함을 의미함
+
+- 203 : 요청을 성공하였지만, 요청에 대한 검증이 되지 않은 상태를 의미함
+
+- 204 : 요청을 성공하였지만, 제공할 내용이 없음을 의미
+
+- 205 : 204와 동일하지만 새로고침등을 통해 새로운 내용등을 확인할것을 추가로 의미
+
+- 206 : 요청의 일부분만 성공하였음을 의미
+
+#### 300 - 399 : 리다이렉션 상태 코드
+클라이언트에 요청에 대해 적절한 다른 위치를 제공하거나, 대안의 응답을 제공한다.
+
+- 300 : 클라이언트가 동시에 여러 응답을 가리키는 URL을 요청한 경우 응답 목록과 함께 반환된다.(ex] 어떠한 HTML에 문서에 대한 영문페이지와 불어페이지를 요청)
+
+- 301 : 요청한 URL이 옮겨졌을 때 사용. 옮겨진 URL에 대한 정보와 함께 응답되어야 한다.
+
+- 302 : 301과 동일하나, 클라이언트는 여전히 옮겨지기전 URL로 요청할것을 의미
+
+- 303 : 요청받은 행동 수행을 위해서는 다른 URL로 요청 해야함을 의미
+
+- 304 : 이전의 동일한 요청과 비교하여 변화가 없음을 의미 (단시간에 반복된 동일 요청에 대한 대응 코드)
+
+- 305 : 직접적인 요청이 아니라 반드시 프락시(우회경로)를 통해 요청되어야 함을 의미
+
+- 307 : 302와 동일하며, HTTP Method도 변경없이 요청하여야 함을 의미
+
+#### 400 - 499 : 클라이언트 에러 상태 코드
+클라이언트의 잘못된 요청에 대한 대응 코드
+
+- 400 : 클라이언트가 올바르지 못한 요청을 보내고 있음을 의미
+
+- 401 : 요청을 위해서는 권한 인증등을 요구함을 의미 (NOT AUTHORIZED)
+
+- 403 : 요청이 서버에 의해 거부 되었음을 의미 (FORBIDDEN)
+
+- 404 : 요청한 URL을 찾을 수 없음을 의미 (NOT FOUND)
+
+- 405 : 요청한 URL이 Method를 지원하지 않음을 의미 (ex] POST요청에 대한 응답을 하는 URL에 GET으로 요청) (NOT ALLOWED)
+
+- 406 : 클라이언트 요청에 대해 적절한 컨텐츠가 없음을 의미
+
+- 407 : 401과 동일하나, 프락시(우회경로)를 통하여 인증 할 것을 요구함을 의미
+
+- 408 : 요청에 응답하는 시간이 너무 많은 시간이 걸림을 의미(서버는 요청을 끊을수 있음)
+
+- 409 : 클라이언트 요청에 대해 서버에서 충돌 요소가 발생 할수 있음을 의미
+
+- 410 : 요청한 URL이 더 이상 사용되지 않고 사라졌음을 의미
+
+- 411 : 클라이언트 요청에 Content-length 헤더가 포함되어야 함을 의미
+
+- 412 : 클라이언트가 조건부 요청을 했는데 그중 하나가 실패하였음을 의미
+
+- 413 : 요청이 너무 커서 서버가 처리 할 수 없음을 의미
+
+- 414 : 요청 URL이 너무 길어 처리 할 수 없음을 의미
+
+- 415 : 서버가 이해 하지 못하는 유형의 컨텐츠를 요청 하였음을 의미
+
+- 416 : 클라이언트의 요청 내용이 범위가 잘못되었음을 의미
+
+- 417 : 클라이언트 요청 헤더의 Expect에 대해 서버가 만족 하지 않음을 의미
+
+#### 500 - 599 : 서버 에러 상태 코드
+올바른 클라이언트 요청에 대해 서버의 문제로 응답 할 수 없음을 의미
+
+- 500 : 서버에 오류가 발생하여 응답 할 수 없음을 의미
+
+- 501 : 클라이언트 요청에 대한 서버의 응답 수행 기능이 없음을 의미(ex] 서버가 지원하지 않는 새로운 Method를 사용하여 요청 - GET2, POST2...)
+
+- 502 : 프락시나 게이트웨이등의 서버에서 응답하며, 서버의 모(엄마)서버에서 오류가 발생하였음을 의미
+
+- 503 : 현재 서버가 유지보수 등의 이유로 일시적인 사용 불가함을 의미
+
+- 504 : 서버에서 다른 서버로 요청을 보냈으나, 응답 지연이 발생하여 처리가 불가함을 의미
+
+- 505 : 서버가 지원할 수 없거나 올바르지 못한 프로토콜로 요청을 받았음을 의미
+
 ### 6. CORS
 
-### 7. HTTPS
+### 7. HTTPS / HTTP2
 
-### 8. HTTP2
+### 5. HTTP **VS** Socket
 
 ## 5. 쿠기와 세션
 
