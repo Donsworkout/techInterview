@@ -113,9 +113,81 @@
 6. A : TIME WAIT
 
 ## 4. HTTP
+> HTTP => Hyper Text Transfer Protocol  
+인터넷에서 데이터를 주고받을 수 있는 프로토콜,  
+웹 서버와 클라이언트 간의 통신을 하기 위한 통신 규약
 
+### 1. 주요 특징
+- HTTP 는 웹에서만 사용하는 프로토콜이며, TCP/IP 기반이다.
+- HTTP는 비연결성 프로토콜이다  
+- 비연결성의 단점보완을 위해 Cookie와 Seesion 등장
+- 응답은 html 뿐 아니라 json, xml 등으로도 받을  수 있다.
 
-## 5 소켓 / 전문 통신
+### 2. HTTP Method
+1. GET
+    - 데이터가 URL에 노출된다.
+        ~~~
+        www.urladdress.xyz?name1=value1&name2=value2
+        ~~~
+    - **무언가를 가져오는 요청 (select), 상태변화 X**
+    - HTTP 패킷의 Body는 비어 있는 상태로 전송한다.  
+        즉, Body의 데이터 타입을 표현하는 'Content-Type' 필드도 HTTP Request Header에 들어가지 않는다.
+    - 브라우저 캐싱을 지원하여 빠르다 
+
+2. POST
+    - 요청 정보를 HTTP 패킷의 Body 안에 숨겨서 서버로 전송한다.
+    - **서버의 값이나 상태를 바꾸기 위한** 용도의 메서드
+    - Insert, Update, Delete
+    - Request Header의 Content-Type에 해당 데이터 타입이 표현됨
+    application/octet-stream , text/plain, multipart/form-data 등
+    
+3. HEAD 
+    - GET 과 동일한데, HTTP 헤더 정보만 요청 
+    - 네트워크 대역 절약
+
+4. PUT
+    - 요청된 자원을 수정(UPDATE)한다. 
+    - 자원내 모든 필드영역 업데이트 (DB 1 ROW 전체 수정)
+    - 만약 일부만 전달할 경우, 그외의 필드 모두 null or 초기값 처리
+    - 따라서 PUT 잘못쓰면 골로간다
+    - 보안 위협
+
+5. PATCH
+    - PUT과 유사하게 요청된 자원을 수정(UPDATE)할 때 사용한다. 
+    - PUT의 경우 자원 전체를 갱신하는 의미지만, PATCH는 해당자원의 일부를 교체하는 의미로 사용.
+
+6. DELETE
+    - 자원 삭제 
+    - 보안 위협
+
+7. OPTIONS
+    - 요청한 URL이 어떤 메서드를 제공하는지 체크 
+    - 보안 위협
+
+8. TRACE
+    - 받은 메시지를 다시 돌려보낸다.
+
+9. CONNECT
+    - 프록시에 사용하기 위해 예약된 메서드이다
+        - 프록시 서버의 기본적인 동작은 클라이언트로부터 전달받은 리퀘스트를 서버로 전달하고, 서버에서 받은 응답을 클라이언트에 전달하는 역할을 한다.
+        - 프록시의 사용 목적은 네트워크 캐싱, 조직내의 특정 웹사이트 액세스 방지, 액세스 로그 획득 등이 있다.
+
+### 3. HTTP Request / Response 헤더
+    
+### 4. HTTP Keep-Alive
+
+### 5. HTTP Status Code
+
+### 6. CORS
+
+### 7. HTTPS
+
+### 8. HTTP2
+
+## 5. 쿠기와 세션
+
+## 6. 소켓 / 전문 통신
+
 ### 1. 소켓
 > 두 프로세스간 네트워크를 통해 통신을 수행할 수 있도록 양쪽에 생성되는 링크의 단자  
 네트워크 4계층 (Transport)의 TCP/IP와 관련되어 있음 (연결형 서비스)  
