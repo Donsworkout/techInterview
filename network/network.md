@@ -1,6 +1,121 @@
 [목록으로](https://github.com/Donsworkout/techInterview/blob/master/README.md)
 
-## 소켓 / 전문 통신
+## 1. OSI7 계층 
+> 컴퓨터 네트워크 통신과 프로토콜을 계층으로 나누어 설명한 것
+
+![osi-7-layer](https://user-images.githubusercontent.com/26560119/64315569-60381e00-cfed-11e9-8ba3-c56d84afc151.png)
+
+- 각 계층은 하위 계층의 기능만을 이용하고, 상위 계층에게 기능을 제공한다.
+- 일반적으로 하위 계층들은 하드웨어로, 상위 계층들은 소프트웨어로 구현된다.
+- 네트워크 관리자는 어떤 문제의 원인이 어디에 있는지 범위를 좁힐 수 있다
+- 언제나 그렇듯 역할과 책임의 분리 (추상화)
+- 각 계층의 전달 단위는 프레임, 패킷, 세그먼트지만 데이터는 같고 헤더 정보만 다르다 (MAC, IP, PORT 등)
+
+1. 물리 계층 (Physical Layer)  
+    - 시스템의 전기적 물리적 표현을 나타낸다.  
+    - 구분 주소는 MAC
+    - 네트워크 케이블, 주파수 등 연결과 관련된 HW 적인 Feature 이다.
+    - 전송 단위는 Bit 이다
+
+2. 데이터 링크 계층 (Data-link Layer)
+    - 노드간 데이터 전송을 나타낸다.
+    - CRC 기반의 오류, 흐름 제어가 들어간다. (약하게)
+    - 구분 주소는 MAC
+    - Ethernet (통신 기술 표준)
+        - 저비용 / 비 연결성, 비 신뢰성
+    - 데이터 전송 단위는 Frame
+
+3. 네트워크 계층 (Network Layers)
+    - MAC 주소 가지고는 통신불가, 상위 레이어가 필요
+    - 여러개의 노드를 거칠때마다 경로를 찾아주는 역할을 하는 계층 (Routing)
+    - 라우팅, 흐름 제어, 세그멘테이션(segmentation/desegmentation), 오류 제어, 인터네트워킹(Internetworking)
+    - 논리적인 주소 구조(IP), 곧 네트워크 관리자가 직접 주소를 할당하는 구조를 가짐
+    - 데이터 전송 단위는 Datagram(Packet) 이다.
+
+4. 전송 계층 (Transport Layer)
+    - End to End 사용자간 데이터 전달 신뢰성을 보장해 주는 Layer
+    - 시퀀스 넘버 기반의 오류제어 
+    - 전송 계층은 특정 연결의 유효성을 제어하고, 일부 프로토콜은 상태 개념이 있고(stateful), 연결 기반(connection oriented)이다. (이는 전송 계층이 패킷들의 전송이 유효한지 확인하고 전송 실패한 패킷들을 다시 전송한다는 것을 뜻한다.)
+    - 가장 잘 알려진 전송 계층의 예는 TCP이다.
+    - 데이터 전송 단위는 Segment이다.
+    - PORT 로 프로세스를 구분한다. 
+
+5. 세션 계층 (Session Layer)
+    - 세션 연결의 설정과 해제, 세션 메시지 전송 등의 기능을 한다.
+    - 성립된 세션을 통한 상호 대화 관리를 하는 양단간 응용 개체를 위해 토큰 개념이 정의
+    - 세션계층은 전송시 동기점을 삽입함으로써 메세지를 대화 단위로 그룹화 함  
+    에러 발생하면 중단된 대화 단위의 처음부터 전송을 다시 시작
+
+6. 표현 계층 (Presentation Layer)
+    - 여러 다른 회사의 네트워크 시스템마다 다른 데이터 표현 방식을 사용하는데 그것을 통일하는 계층임 (암호화, 압축)
+    - JPEG, TIFF, GIF(그래픽 포맷), MPEG, QUICKTIME(동영상 포맷), MIDI(음악 포맷), RTF, ASCII, EBCDIC(텍스트 포맷)등을 지정 한다
+
+7. 응용 계층 (Application Layer)
+    - 응용 프로세스와 직접 관계하여 일반적인 응용 서비스를 수행한다.
+    - 사용자가 직접 눈으로 보고 실제로 작업을 하는 계층이다. 
+    - 웹 브라우저, HTTP, FTP, WWW, Telnet, SMTP, POP 
+
+## 2. TCP / UDP
+> 네트워크 계층 중 전송(Transport) 계층에서 사용하는 프로토콜
+
+### 1. TCP
+**신뢰성** 보장이 아주 중요한 키워드이다.  
+
+<img width="326" alt="tcp-virtual-circuit" src="https://user-images.githubusercontent.com/26560119/64318280-ad6bbe00-cff4-11e9-8292-b3115ca400a6.png">
+
+- 인터넷 상에서 세그먼트를 보내기 위해 IP와 함께 사용하는 프로토콜이다.
+- TCP와 IP를 함께 사용하는데, IP가 주소를 찾아주면 TCP는 흐름 제어, 혼잡 제어 등 신뢰성을 보장한다. 
+    - 흐름제어 (**Host to Host** / 송신측이 수신측보다 과하게 빠른 문제 해결)
+        - 데이터를 송신하는 곳과 수신하는 곳의 데이터 처리 속도를 조절하여 수신자의 버퍼 오버플로우를 방지하는 것
+        - 송신하는 곳에서 감당이 안되게 많은 데이터를 빠르게 보내 수신하는 곳에서 문제가 일어나는 것을 막는다.
+    - 혼잡제어 (**Host to Network** / **네트워크**의 과부하 조절)
+        - 네트워크 내의 패킷 수가 넘치게 증가하지 않도록 방지하는 것
+        - 정보의 소통량이 과다하면 패킷을 조금만 전송하여 혼잡 붕괴 현상이 일어나는 것을 막는다
+- **연결형 서비스이다**
+    - 3-way handshaking과정을 통해 연결을 설정하고, 4-way handshaking을 통해 연결을 해제한다.
+    - https://github.com/WeareSoft/tech-interview/blob/master/contents/network.md#tcp%EC%9D%98-3-way-handshake%EC%99%80-4-way-handshake 
+- 전이중(Full-Duplex), 점대점(Point to Point) 방식이다.
+    - 전이중
+        - 전송이 양방향으로 동시에 일어날 수 있다.
+    - 점대점
+        - 각 연결이 정확히 2개의 종단점을 가지고 있다.
+- UDP보다 속도가 느리다.
+
+### 2. UDP
+**비연결형 프로토콜** 이라는 점에 주목
+
+<img width="326" alt="udp-datagram" src="https://user-images.githubusercontent.com/26560119/64318817-f5d7ab80-cff5-11e9-8c72-c7e7f3019c6d.png">
+- 4계층 프로토콜이긴 한데 IP만 보고 움직임 
+- 패킷 단위로 전송
+- TCP 처럼 연결형이 아니라, 데이터 순서 보장 X (지맘대로 감)
+- 그대신 빠름 (스트리밍에 적합)
+- UDP헤더의 CheckSum 필드를 통해 최소한의 오류만 검출한다.
+- 흐름제어(flow control)가 없어서 패킷이 제대로 전송되었는지, 오류가 없는지 확인할 수 없다. (성능 중시)
+
+## 3. 3-way handshake / 4-way handshake
+### 1. 3-way handshake (연결 시작)
+
+![222D873E5815FD142E](https://user-images.githubusercontent.com/26560119/64319805-359f9280-cff8-11e9-970a-b95c6d6bff14.jpeg)
+
+1. A : SYN (포트 열어라 새끼야)
+2. B : ACK (알겠어), SYN (근데 너도 포트 열어)
+3. A : ACK (OK 나도 열었어)
+
+### 2. 4-way handshake  (연결 종료)
+
+![2301313E5815FF5A27](https://user-images.githubusercontent.com/26560119/64319806-359f9280-cff8-11e9-8967-3e58713cb604.png)
+
+1. A : FIN (얀결 끊자)
+2. B : ACK (OK, 끊자는 메시지 받았어) ... 일 처리하던거 마무리
+3. A : ... 대기중
+4. B " FIN (나 연결 끊었어)
+5. A : ACK (OK 나도 좀만 기다리다 끊을게)
+6. A : TIME WAIT
+
+## 4. HTTP
+
+
+## 5 소켓 / 전문 통신
 ### 1. 소켓
 > 두 프로세스간 네트워크를 통해 통신을 수행할 수 있도록 양쪽에 생성되는 링크의 단자  
 네트워크 4계층 (Transport)의 TCP/IP와 관련되어 있음 (연결형 서비스)  
