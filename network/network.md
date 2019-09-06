@@ -442,6 +442,11 @@ HTTP/1.1에서 클라이언트는 요청한 HTML문서를 수신한 후  HTML문
 
 
 ### 5. HTTP **VS** Socket
+#### HTTP
+-  요청 - 응답 - close (keep alive 가능)
+
+#### TCP Socket
+- 요청 - 응답 - 요청 - 응답 - 강제종료
 
 ## 5. 쿠기와 세션
 
