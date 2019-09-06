@@ -385,9 +385,61 @@ HTTP 는 비연결 방식으로 연결을 매번 만들고 끊는 구조이다.
 
 - 505 : 서버가 지원할 수 없거나 올바르지 못한 프로토콜로 요청을 받았음을 의미
 
-### 6. CORS
+### 6. CORS란 (Cross Origin Resource Sharing)
+> 웹 서버에게 보안 cross-domain 데이터 전송을 활성화하는 cross-domain 접근 제어권을 부여한다.
+- 배경
+    - 처음 전송되는 리소스의 도메인과 다른 도메인으로부터 리소스가 요청될 경우 해당 리소스는 cross-origin HTTP 요청에 의해 요청된다.
+    - 보안 상의 이유로, 브라우저들은 스크립트 내에서 초기화되는 cross-origin HTTP 요청을 제한한다.
+        - 예를 들면, XMLHttpRequest는 same-origin 정책을 따르기에 XMLHttpRequest을 사용하는 웹 애플리케이션은 자신과 동일한 도메인으로 HTTP 요청을 보내는 것만 가능했다.
+        - 웹 애플리케이션을 개선시키기 위해, 개발자들은 브라우저 벤더사들에게 XMLHttpRequest가 cross-domain 요청을 할 수 있도록 요청했고 이에 따라 CORS가 생겼다.
+- 과정
+    - CORS 요청 시에는 미리 OPTIONS 주소로 서버가 CORS를 허용하는지 물어본다.
+    - 이때 Access-Control-Request-Method로 실제로 보내고자 하는 메서드를 알리고,
+    - Access-Control-Request-Headers로 실제로 보내고자 하는 헤더들을 알린다.
+    - Allow 항목들은 Request에 대응되는 것으로, 서버가 허용하는 메서드와 헤더를 응답하는데 사용된다. (preflight)
+    - Request랑 Allow가 일치하면 CORS 요청이 이루어진다.
+
+> - [https://zamezzz.tistory.com/137](https://zamezzz.tistory.com/137)
 
 ### 7. HTTPS / HTTP2
+#### 1. HTTPS
+> HyperText Transfer Protocol over Secure Socket Layer
+
+- HTTPS는 소켓 통신에서 일반 텍스트를 이용하는 대신에, 웹 상에서 정보를 암호화하는 SSL이나 TLS 프로토콜을 통해 세션 데이터를 암호화한다.
+
+- HTTPS의 원리 
+    - 공개키 알고리즘 (공개키는 암호화에, private 키는 복호화에)
+        1. 사용자의 데이터를 공개키로 암호화 (공개키를 얻은 인증된 사용자)
+        2. 서버로 전송 (데이터를 가로채도 개인키가 없으므로 복호화할 수 없음)
+        3. 서버의 개인키를 통해 복호화하여 요청 처리
+    - 사용자 인증 방법  
+         
+         - 클라이언트가 서버에 접속한 직후에, 서버는 클라이언트에게 이 인증서 정보를 전달한다. 클라이언트는 이 인증서 정보가 신뢰할 수 있는 것인지를 검증 한 후에 다음 절차를 수행하게 된다 (SSL 인증서에 공개키 포함)
+        - 그리고 SSL 인증서 안에는 CA (인증서 발급 조직) 가 있는데, 브라우저가 미리 CA 리스트를 파악하고 있고, 여기에 있는 것이 공인된 CA 다.
+
+#### 2. HTTP2 
+> 웹 페이지 로드 시 리소스가 예전에 비해 많이 커지면서 이에대한 부분을 더 효율적으로 만들어주는데 초점을 맞춤 
+
+1.  Binary Framework 
+
+    - HTTP/2 는 TCP 계층과의 사이에 새로운 Binary Framework 를 통해 네트워크 스택을 구성한다.
+    - 기존 텍스트 기반 Header 와 Body 대신 HTTP/2 는 전송에 필요한 메시지들을 Binary 단위로 구성하여 더 작은 프레임으로 쪼개서 관리한다.
+
+기존에 텍스트 기반으로 Header 와 Data 가 연결되고 있던 1.1 이하 버전과 다르게 HTTP/2 는 전송에 필요한 메시지들을 Binary 단위로 구성하며 필요 정보를 더 작은 프레임으로 쪼개서 관리한다. 
+
+2. Multiplexing 개선
+> 멀티플렉싱이란 한 링크에서 어러개의 신호를 동시에 송수신 할 수 있도록 하는 것
+
+<img src="https://t1.daumcdn.net/cfile/tistory/995998375C17AE5F13"/>
+
+기존 HTTP 1.1 과는 다르게 이것이 가능한 이유는 HTTP/2는 패킷을 Frame 단위로 세분화하여 순서에 상관없이 받는쪽에서 조립하도록 설계하였기 때문이다. 
+
+3.  Header Compression
+    - 헤더 압축
+
+4. Server Push  
+HTTP/1.1에서 클라이언트는 요청한 HTML문서를 수신한 후  HTML문서를 해석하면서 필요한 리소스를 재 요청하는 반면 HTTP/2에선 Server Push기법을 통해서 클라이언트가 요청하지도 않은 (HTML문서에 포함된 리소스) 리소스를 Push 해주는 방법으로 클라이언트의 요청을 최소화 해서 성능 향상을 이끌어 낸다. 
+
 
 ### 5. HTTP **VS** Socket
 
