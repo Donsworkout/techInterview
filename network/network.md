@@ -448,7 +448,47 @@ HTTP/1.1에서 클라이언트는 요청한 HTML문서를 수신한 후  HTML문
 #### TCP Socket
 - 요청 - 응답 - 요청 - 응답 - 강제종료
 
-## 5. 쿠기와 세션
+## 5. 쿠키와 세션
+- HTTP 프로토콜에서 상태를 유지하기 위한 기술로 쿠키와 세션이 있다.
+### 쿠키 (Cookie)
+- 클라이언트에 저장되는 Key, Value
+- 이름, 값, 유호 시간, 경로 등을 포함하고 있다.
+- 클라이언트의 상태 정보를 브라우저에 저장하여 참조한다.
+
+#### 구성 요소
+- 쿠키의 이름(name)
+- 쿠키의 값(value)
+- 쿠키의 만료시간(Expires)
+- 쿠키를 전송할 도메인 이름(Domain)
+- 쿠키를 전송할 경로(Path)
+- 보안 연결 여부(Secure)
+- HttpOnly 여부(HttpOnly)
+
+<img src="https://github.com/WeareSoft/tech-interview/raw/master/contents/images/cookie-process.png"/>
+
+### 세션 (Session)
+1. 웹브라우저가 서버에 Request 
+2. 서버가 해당 웹브라우저(클라이언트)에 유일한 ID(Session ID)를 부여함
+3. 서버가 응답할 때 HTTP 헤더(Set-Cookie)에 Session ID를 포함해서 전송
+4. 쿠키에 Session ID를 JSESSIONID 라는 이름으로 저장  
+`Set−Cookie: JSESSIONID=xslei13f`
+5. 웹브라우저는 웹브라우저를 닫기까지 다음 요청 때 부여된 Session ID가 담겨있는 쿠키를 HTTP 헤더에 넣어서 전송  
+`Cookie: JSESSIONID=xslei13f`
+6. 서버는 세션 ID 기반으로 응답
+
+### 쿠키와 세션의 차이점
+#### 1. 저장 위치
+    쿠키 : 클라이언트
+    세션 : 서버
+#### 2. 보안
+    쿠키 : 클라이언트에 저장되므로 보안에 취약하다.
+    세션 : 쿠키를 이용해 Session ID 만 저장하고 이 값으로 구분해서 서버에서 처리하므로 비교적 보안성이 좋다.
+#### 3. 라이프사이클
+    쿠키 : 만료시간에 따라 브라우저를 종료해도 계속해서 남아 있을 수 있다.
+    세션 : TimeOut 도 있지만 브라우저가 종료되면 만료시간에 상관없이 삭제된다.
+#### 4. 속도
+    쿠키 : 클라이언트에 저장되어서 서버에 요청 시 빠르다.
+    세션 : 실제 저장된 정보가 서버에 있으므로 서버의 처리가 필요해 쿠키보다 느리다.
 
 ## 6. 소켓 / 전문 통신
 
