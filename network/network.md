@@ -443,6 +443,9 @@ HTTP/1.1에서 클라이언트는 요청한 HTML문서를 수신한 후  HTML문
 
 ### 5. HTTP **VS** Socket
 #### HTTP
+- Half Duplex 
+- 서버 - 클라이언트간 상태를 유지하지 않는다.
+- 따라서 서버 요청 처리후 다시 TCP Connection 을 맺어주어야 함
 -  요청 - 응답 - close (keep alive 가능)
 
 #### TCP Socket
@@ -490,7 +493,49 @@ HTTP/1.1에서 클라이언트는 요청한 HTML문서를 수신한 후  HTML문
     쿠키 : 클라이언트에 저장되어서 서버에 요청 시 빠르다.
     세션 : 실제 저장된 정보가 서버에 있으므로 서버의 처리가 필요해 쿠키보다 느리다.
 
-## 6. 소켓 / 전문 통신
+## 6. 주소창에 URL 압력 시 일어나는 일들
+1. 브라우저의 url 파싱
+    ~~~java
+    http: // 통신 규약 
+    www.example.com =//주소
+    :80 // 포트, 입력 x 시 표준 HTTP 포트 [http 80, https 443] 사용
+    /path/to/myfile.html // 웹 서버에서 자원에 대한 경로 (라우팅)
+    ?key1=value1&key2=value2 (파라미터)
+    ~~~
+
+2. DNS 서버 검색
+    1. 브라우저 캐시에 남아 있으면, 바로 해당되는 서버 IP를 반환하고
+    2. ISP의 DNS 해석기에게 주소를 해석하여 IP로 반환시킨다
+
+3. ARP Request (2계층 Data-Link)
+    1. IP 주소로는 해당 지역 라우터까지 접근 가능  
+    **라우터** 에서는 IP 주소에 해당하는 컴퓨터가 누군지 알아내기 위해 MAC 주소가 필요
+    2. 클라이언트는 가장 먼저 ARP 캐시에 확인
+    3. 캐시 (ARP 테이블) 에 없다면 ARP요청 패킷을 해당 IP 라우터에 브로드캐스트로 전송 
+    4. 해당되는 수신자만 자신의 논리주소와 물리주소를 넣어 응답 패킷을 유니캐스트로 전송
+
+4. TCP Connection (Client -> Server)
+    - 네트워크 4계층 (Transport, ip와 port 기반 TCP 소켓 연결)  
+
+    - 소켓은 통신을 원하는 프로세스에 할당되는 자원이며 서로다른 site의 두 프로세스가 네트워크를 통해 서로 통신할 수 있는 통신 접속점 (포트 기반)
+    - 아래는 TCP/IP 4계층
+
+        <img src="https://t1.daumcdn.net/cfile/tistory/996C19435C3D5E1F07"/>
+    1. 3 way handshake (연결)
+    2.  4 way handshake (해제)
+
+5. http Request 송신 
+    - http 메시지 송신 (GET, POST 등 메서드 / 수신자 / 요청 자원 등 포함)
+
+6. 서버 처리 (웹 서버, 웹 어플리케이션 서버)
+
+7. TCP Connection (Server -> Client)
+
+8. 서버 측 http Response 송신
+
+9. 클라이언트는 http Response 를 받아서 사용자에게 노출 
+
+## 7. 소켓 / 전문 통신
 
 ### 1. 소켓
 > 두 프로세스간 네트워크를 통해 통신을 수행할 수 있도록 양쪽에 생성되는 링크의 단자  
