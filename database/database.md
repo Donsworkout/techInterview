@@ -43,6 +43,8 @@
 - Commit / Aborted (undo) 상태가 DB가 보장하는 상태 
 
 ### Isolation Level
+http://www.dbguide.net/db.db?cmd=view&boardUid=148216&boardConfigUid=9&boardIdx=138&boardStep=1
+
 1. Read Uncommitted  
 커밋도 안했는데, 바뀐 값을 읽어올 수 있다.
 
