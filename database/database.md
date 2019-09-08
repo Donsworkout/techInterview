@@ -46,17 +46,19 @@
 http://www.dbguide.net/db.db?cmd=view&boardUid=148216&boardConfigUid=9&boardIdx=138&boardStep=1
 
 1. Read Uncommitted  
-커밋도 안했는데, 바뀐 값을 읽어올 수 있다.
+커밋도 안했는데, 바뀐 값을 읽어올 수 있다. (UPDATE 직후)
 
 > 발생 문제점 : Dirty Read, Non-Repeatable Read, Phantom Read
 
-2. Read Committed  
-커밋이 완료된 데이타만 읽을 수 있다. 커밋 되기 전에 읽으면 예전 데이터로 읽고, 커밋 후면 바뀐 데이터로 읽어온다. 
+2. Read Committed (READ 두번 할떄 한번 하고 그 중간에 UPDATE 간섭가능) 
+커밋이 완료된 데이터만 읽을 수 있다. 중간 간섭하는 TX2 가 커밋 되기 전에 읽으면 예전 데이터로 읽고, 커밋 후면 바뀐 데이터로 읽어온다. 
 Dirty Read가 발생할 여지는 없으나, Read Uncommitted 수준보다 동시 처리 성능은 떨어진다.  
 > 발생 문제점 : Non-Repeatable Read, Phantom Read
 
 3. Repeatable Read  
+한번 읽은 값은 계속 그대로 읽는다.  
 트랜잭션이 완료되기 전까지는 처음느낌 그대로 ㄱ (다른 트랜잭션이 수정 불가)
+한번 읽혀졌던 데이터에 걸린 LOCK 이 계속 유지된다.
 
 > 발생 문제점 : Phantom Read
 
