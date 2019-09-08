@@ -85,6 +85,7 @@
 **비연결형 프로토콜** 이라는 점에 주목
 
 <img width="326" alt="udp-datagram" src="https://user-images.githubusercontent.com/26560119/64318817-f5d7ab80-cff5-11e9-8c72-c7e7f3019c6d.png">
+
 - 4계층 프로토콜이긴 한데 IP만 보고 움직임 
 - 패킷 단위로 전송
 - TCP 처럼 연결형이 아니라, 데이터 순서 보장 X (지맘대로 감)
