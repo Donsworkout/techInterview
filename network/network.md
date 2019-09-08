@@ -123,7 +123,7 @@
 ### 1. 주요 특징
 - HTTP 는 웹에서만 사용하는 프로토콜이며, TCP/IP 기반이다.
 - HTTP는 비연결성 프로토콜이다  
-- 비연결성의 단점보완을 위해 Cookie와 Seesion 등장
+- 비연결성의 단점보완을 위해 Cookie와 Session 등장
 - 응답은 html 뿐 아니라 json, xml 등으로도 받을  수 있다.
 
 ### 2. HTTP Method
@@ -144,9 +144,10 @@
     - Request Header의 Content-Type에 해당 데이터 타입이 표현됨
     application/octet-stream , text/plain, multipart/form-data 등
     
-3. HEAD 
-    - GET 과 동일한데, HTTP 헤더 정보만 요청 
-    - 네트워크 대역 절약
+3. HEAD  
+    - Get Response 헤더 정보만 받아오겠다. 
+    - 특정 리소스를 GET 으로 요청하는 경우에 어떤 헤더들이 반환되는지를 요청
+    - 예를 들어, 큰 용량의 리소스를 다운로드 받을지 말지 결정하기 위해서 사전 요청하는 용도로 사용할 수 있습니다.
 
 4. PUT
     - 요청된 자원을 수정(UPDATE)한다. 
@@ -400,7 +401,7 @@ HTTP 는 비연결 방식으로 연결을 매번 만들고 끊는 구조이다.
     - 이때 Access-Control-Request-Method로 실제로 보내고자 하는 메서드를 알리고,
     - Access-Control-Request-Headers로 실제로 보내고자 하는 헤더들을 알린다.
     - Allow 항목들은 Request에 대응되는 것으로, 서버가 허용하는 메서드와 헤더를 응답하는데 사용된다. (preflight)
-    - Request랑 Allow가 일치하면 CORS 요청이 이루어진다.
+    - Request Header 의 Origin과 Allow가 일치하면 CORS 요청이 이루어진다.
 
 > - [https://zamezzz.tistory.com/137](https://zamezzz.tistory.com/137)
 
@@ -496,7 +497,7 @@ HTTP/1.1에서 클라이언트는 요청한 HTML문서를 수신한 후  HTML문
     쿠키 : 클라이언트에 저장되어서 서버에 요청 시 빠르다.
     세션 : 실제 저장된 정보가 서버에 있으므로 서버의 처리가 필요해 쿠키보다 느리다.
 
-## 6. 주소창에 URL 압력 시 일어나는 일들
+## 6. 주소창에 URL 입력 시 일어나는 일들
 1. 브라우저의 url 파싱
     ~~~java
     http: // 통신 규약 
@@ -531,7 +532,8 @@ HTTP/1.1에서 클라이언트는 요청한 HTML문서를 수신한 후  HTML문
     - http 메시지 송신 (GET, POST 등 메서드 / 수신자 / 요청 자원 등 포함)
 
 6. 서버 처리 (웹 서버, 웹 어플리케이션 서버)
-
+    - Tomcat 같은 서블릿 컨테이너가 받아서 동적 처리 
+    - 서블릿 doGet doPost .. 디스패쳐서블릿 .. 페이지 컨트롤러 - 비즈로직 - 뷰리졸버
 7. TCP Connection (Server -> Client)
 
 8. 서버 측 http Response 송신
