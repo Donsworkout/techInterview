@@ -540,7 +540,27 @@ HTTP/1.1에서 클라이언트는 요청한 HTML문서를 수신한 후  HTML문
 
 9. 클라이언트는 http Response 를 받아서 사용자에게 노출 
 
-## 7. 소켓 / 전문 통신
+## 7. REST
+https://gmlwjd9405.github.io/2018/09/21/rest-and-restful.html
+
+**Representational State Transfer**  
+- HTTP **URI(Uniform Resource Identifier)** 를 통해 **자원(Resource)** 을 명시하고, HTTP Method(POST, GET, PUT, DELETE)를 통해 해당 자원에 대한 **CRUD Operation** 을 적용하는 것을 의미한다.
+
+- 자원을 이름(표현) 으로 구분하여 해당 자원의 상태(정보)를 주고 받는 모든 것을 의미한다.  
+즉, 자원(resource)의 표현(representation) 에 의한 상태 전달
+
+1. 자원의 표현 
+자원: 해당 소프트웨어가 관리하는 모든 것  
+-> Ex) 문서, 그림, 데이터, 해당 소프트웨어 자체 등
+
+    자원의 표현: 그 자원을 표현하기 위한 이름  
+-> Ex) DB의 학생 정보가 자원일 때, ‘students’를 자원의 표현으로 정한다.
+
+2. 상태(정보) 전달  
+데이터가 요청되어지는 시점에서 자원의 상태(정보)를 전달한다.
+JSON 혹은 XML를 통해 데이터를 주고 받는 것이 일반적이다.
+
+## 8. 소켓 / 전문 통신
 
 ### 1. 소켓
 > 두 프로세스간 네트워크를 통해 통신을 수행할 수 있도록 양쪽에 생성되는 링크의 단자  
