@@ -94,22 +94,20 @@ https://github.com/WeareSoft/tech-interview/blob/master/contents/db.md#join
 https://github.com/Donsworkout/cs_wiki/blob/master/database_system/22_a_parallel_dbms.md
 - 남이 쓴 링크  
 https://github.com/WeareSoft/tech-interview/blob/master/contents/db.md#%ED%8C%8C%ED%8B%B0%EC%85%94%EB%8B%9D
+
 ### 5-1) 샤딩 심화  
-- CUBRID SHARD, GIZZARD 등은 샤딩 플랫폼이다.
-- 샤딩은 수평 파티셔닝이다.
-- JOIN, 일관성 등에 약하다.
-- Hibernate Shard 는 어플리케이션 서버 샤딩
+
+- 샤딩은 **수평 파티셔닝** 이다.
+- JOIN 이나 일관성 유지 등에 약하다.
 - MongoDB는 데이터베이스 자체에서 샤딩 기능을 내장한다.
-- Cubrid, Gizzard 는 미들웨어 샤딩 플랫폼
 - 데이터베이스 위치 (site) 는 추상화 되어 있다.
 - 당연히 물리적 샤딩 하면, 네트워크 IO 발생 
-- 미들웨어는 DB와 웹 어플리케이션의 중간 
+- Cubrid, Gizzard 는 미들웨어 샤딩 플랫폼
 
 ### 5-2) 샤딩의 단점, 주의사항
 
-- 두 개 이상의 샤드(site) 에 대한 JOIN 연산을 할 수 없다.  
-- auto increment (serial) 등은 샤드별로 달라질 수 있다. (인스타그램)  
-- last_insert_id() 값은 유효하지 않다.  
+- **두 개 이상의 샤드** (site) 에 대한 JOIN 연산을 할 수 없다.  
+- auto increment (serial) 등은 샤드별로 달라질 수 있다.
 - shard key column 값은 update하면 안 된다(delete - insert 사용).  
 - 하나의 트랜잭션에서 **두 개 이상** 의 샤드에 접근할 수 없다.
 - Scale up 을 항상 고려하자 
@@ -141,12 +139,12 @@ ALTERNATIVE 3 :
 ### 6.2. 인덱스를 이용할때 최적의 조건  
 - 테이블당 하나만 생성할 수 있는 clustered 인덱스가 가장 빠르긴 함 (실제 인접)
 - unclustered 도 rid 찾는것은 빠르지만, range query 일때 여러 페이지에서 레코드를 메모리로 올려야 해서 I/O cost 가 크다.
-- 풀스캔은 차라리 인덱스 안쓰는게 낫다. (왜냐 인덱스 스캔에도 불리하고, 분포도가 10% 넘어가면 disk IO가 너무 커짐)
+- 풀스캔은 차라리 인덱스 안쓰는게 낫다. 
+- 풀스캔 할 떄 인덱스는 버킷 찾으면 따로따로 디스크 블락을 불러 과도한 disk IO가 생김
+- 인덱스 안타는 풀스캔은 Multi Block IO를 한다. 한꺼번에 블락 끌어옴 
 - B + tree 라면 fanout 을 높이는게 포인트, 따라서 인덱스 sKey 압축하기도 함
 - 따라서 복합 서치키도 너무 길면 fanout 줄여서 트리 업데이트가 더 자주 일어남   
 - COUNT MIN AVG 등 직계함수는 INDEX ONLY 도 가능하다.
-- 풀스캔이 왜 더 빠를때가 있냐 하면, 인덱스는 버킷 찾으면 따로따로 디스크 블락을 불러 무수히 많은 IO가 생김 , 근데 절대량도 중요 3000건 미만일시!
-- 풀스캔은 멀티블락IO를 한다. 한꺼번에 블락 끌어옴! 
 
 ### 6.3. **Query workload**
 - 어떤 relation 이 쿼리에 참여했는지
@@ -158,9 +156,10 @@ ALTERNATIVE 3 :
 https://github.com/Donsworkout/cs_wiki/blob/master/database_system/8_overview_of_storage_and_indexing.md#7-%EC%96%B4%EB%96%A4-%EC%9D%B8%EB%8D%B1%EC%8A%A4%EB%A5%BC-%EC%93%B8%EC%A7%80-%EC%84%A0%ED%83%9D%ED%95%98%EA%B8%B0\
 
 ## 7. Slow Query 대처 
-> 슬로우 쿼리 로그는 시간이 오래 걸렸던 쿼리를 로그로 저장해 놓은 것. FULL SCAN 이나 잘못된 인덱스 사용으로 발생하기도 한다.
+> **슬로우 쿼리 로그** 는 시간이 오래 걸렸던 쿼리를 로그로 저장해 놓은 것. FULL SCAN 이나 잘못된 인덱스 사용으로 발생하기도 한다.
+
 ### 7.1. Slow Query 원인  
-- 쿼리 실행 계획 체크하여 확인, 인덱스 잘못 쓴 경우가 많음 
+- **쿼리 실행 계획** 체크하여 확인, 인덱스 잘못 쓴 경우가 많음 
 - 서치키 or 복합서치키 prefix에 where 절 처음 조건이 오지는 않는지 체크
 - 버퍼 풀 사이즈가 너무 작지는 않은지 
 - 어쨋든 로그 분석을 잘하자 
