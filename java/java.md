@@ -441,6 +441,13 @@ for (String element : coll) {
 ### 2. DataInputStream / DataOutputStream
 https://hyeonstorage.tistory.com/239
 
+#### 입력 스트림 / 출력 스트림의 특징
+- 스트림은 - 바이트 스트림이라고 보면 된다.
+- 이러한 바이트는 네트워크나, 파일, 메모리 배열 등에서 읽어올 수 있다.
+- reader은 스트림을 소비하고, writer 은 스트림을 생산한다.
+- 원래는 스트림을 하나씩 소비하다가, 끝에 도달하면 -1 반환하는 방식이나 
+- 소켓 통신 같은 경우에 한꺼번에 읽어올 수 도 있다.
+
 ### 3. throw 와 throws (아래 7번 참고)
 - throw 는 **예외 처리** 이고, throws 는 **전가** 이다.
 
@@ -606,14 +613,95 @@ exec = Executor.newFixedThreadPool(스레드_개수);
 int count = Runtime.getRuntime().availableProcessors();
 ~~~
 
-### 2. 스레드 안전성 (Thread Safe)
+### 2. 스레드 안전성에 영향을 주는 것들
 
+#### 1. 가시성
+> 캐싱 및 명령어 재배치는 의도하지 않은 결과를 만들 수 있다.  
+예를 들어 한쪽 스레드에서 어느 시점에 done 이라는 변수를 true 로 바꾸었을 경우, 다른 스레드에는 해당 변수가 캐싱 된 상태로 표시되기 떄문에 제대로 변경값이 탐지가 되지 않을 수 있음
+
+**이는 volatile 키워드로 해결 가능**
+- Java 변수를 Main Memory에 저장하겠다라는 것을 명시하는 것
+- 매번 변수의 값을 Read할 때마다 CPU 캐시에 저장된 값이 아닌 Main Memory에서 읽는 것
+- 또한 변수의 값을 Write할 때마다 Main Memory에 까지 작성하는 것
+- 당연히 성능과 Trade Off 가 있음
+- 여러 Thread 에서 사용시 문제 발생 가능성 있음, 메모리에 쓰는 중에 다른곳에서 덮어쓰고 이러면 부질 없음
+- 따라서 애초에 여러 Thread 에서 쓰려면 Syncronized 키워드 쓰는 것이 낫다
+
+#### 2. 경쟁조건
+> 1번에서 언급한 volatile 로는 충분하지 않다. 스레드 간에 경쟁이 있는데 중간에 자원 선점을 다른 스레드에게 뺏기면 의도치 않은 결과가 발생할 수 있다.
+
+#### 3. 락, 스레드 안전 자료 구조 등
+1. 스레드 안전 자료 구조
+    - 물론 Lock 을 이용하여 한번에 한 스레드만 자료구조에 접근 가능하도록 설정할 수 있으나 성능이 크게 떨어질 수 있다.
+    - java.util.concurrent 패키지를 이용하면, 서로 블로킹 할 필요 없이 자료구조의 각기 다른 부분에 접근하여 동시성을 이용할 수 있다.
+
+    1.1 ) ConcurrentHashMap
+    > 스레드 안전, 그러나 연산의 원자성을 보장하기 위해 compute 메서드를 써야 한다.
+    compute 메서드에는 key와 새 값을 계산하는 함수를 전달해야 한다. (트랜잭션하고 비슷한 느낌, 전달되는 연산을 보장해 줌)
+
+    1.2 ) 블로킹 큐 .. 등등 여러가지 있음 
+
+2. 락 (Lock)  
+2.1) 재진입 가능 잠금 (명시적 잠금)
+~~~java
+Lock countLock = new ReentrantLock();
+int count;
+...
+countLock.lock();
+try{
+    count++; // 임계영역
+} finally {
+    countLock.unlock(); // 잠금 해제
+}
+~~~
+
+2.2) synchronized 키워드 (암시적 잠금)
+> 사실 명시적 잠금과 같은 의미
+~~~java
+syncronized (obj) {
+    // 임계 영역
+}
+~~~
 ## 11. Java 8 에서 추가된 기능
 ### 1. Stream API (반복에서의 더 고수준의 추상화)
+- 어떻게가 아니라 '무엇을' 에 관심있다.
+- 고수준 추상화로 최적화에 도움을 준다, 내부 로직을 API 가 결정 한다는 뜻  
 - 파이프라인을 만드는데 필요한 API를 제공하게 되었다. 
 - 기존에는 한 번에 한 항목을 처리했지만 작업을 고수준으로 추상화해 일련의 스트림으로 만들어 처리할 수 있다는 것
 - 스레드라는 복잡한 작업을 사용하지 않고도 **파이프라인식 병렬성**을 얻을 수 있게 된 것
 
+#### 스트림의 특징들
+1. 스트림 연산은 원본을 변경하지 않는다. (iterate 하며 소비되는 특징을 가짐)
+    - filter 메서드 같은 경우 기존 스트림에서 빼는 것이 아니라, 해당 요소가 없는 새로운 스트림을 돌려주는 방식임
+2. 스트림은 가능한 연산을 지연 시켜둔다. 연산 결과가 필요하기 전까지는 실행되지 않는다
+
+#### 주의사항
+아래와 같은 코드는 잘못된 코드이다
+~~~java
+Stream<String> words = wordList.stream();
+words.forEach(s -> if (s.length() < 12) wordList.remove(s));
+~~~
+위의 코드는 스트림 원본을 손상시키고 있다.  
+중간 스트림은 지연 처리되기 떄문에 중간에 손상시키면 안된다.
+
+#### 스트림의 workflow
+1. 스트림을 생성한다
+    ~~~java
+        Stream<String> words = Stream.of("a","b","c");
+    ~~~
+2. 초기 스트림을 다른 스트림으로 변환하는 중간 연산을 지정한다. (여러 단계일 수 있음)
+    ~~~
+    filter, map, flatMap, sorted, limit 등
+    ~~~
+3. 지연되었던 연산을 적용한다. (이후 해당 스트림 재사용 불가)
+    ~~~
+    forEach, toArray, reduce, collect, min, max, count, anyMatch 등
+    ~~~
+    reduce 같은 경우는 스트림 합산이다
+    ~~~java
+    Optional<Integer> vals = svalues.stream().reduce((x, y) -> x + y)
+    // 이런 느씸
+    ~~~
 ~~~java
 import static java.util.stream.Collectors.toList;
  
