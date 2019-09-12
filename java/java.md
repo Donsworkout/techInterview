@@ -745,8 +745,31 @@ default void sort(Comparator<? super E> c){
 - 값이 없다면 Optional.empty메서드로 Optional을 리턴한다
 
 ### 5. CompletaleFuture
-- 두 개의 비동기 계산 결과를 하나로 합친다
-- Future의 기능을 확장시켜준다...
+> 미래를 예약하는 값이나, 그냥 Future 에 비해 장점이 많다  
+~~~java
+ExecutorService executor = Executors.newSingleThreadExecutor();
+
+CompletableFuture.runAsync(()->{ 
+    try{Thread.sleep(1000);} catch(Exception e){};
+    System.out.println("Hello!");
+    try{Thread.sleep(1000);} catch(Exception e){};
+},executor)
+.thenRun(()->System.out.println("World"));
+
+System.out.println("async request is ready.");
+~~~
+
+두개의 비동기 task 가 **자연스럽게 연결** 되었다. (A완료시 B실행)
+
+1) Executor를 통해 비동기 task 가 수행될 쓰레드를 생성하고
+2) CompletableFuture.runAsync를 통해 다른 쓰레드에서 비동기 식으로 동작할 로직를 선언하고
+3) CompletableFuture.thenRun 를 통해 첫번째 task 가 완료된 이후에 연속적으로 동작할 로직을 선언함
+
+따라서 장점을 따지자면
+- 태스크간 조합과 결합이 용이하다 (연속적 연결)
+- exceptionally 로 예외처리가 용이하다
+
+
 ### 6. New date / time APIs
 
 ## 12. 객체 직렬화 (Serialization)
