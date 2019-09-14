@@ -767,6 +767,7 @@ System.out.println("async request is ready.");
 
 따라서 장점을 따지자면
 - 태스크간 조합과 결합이 용이하다 (연속적 연결)
+    - 여러 Completable Future 를 합쳐서, 마지막 놈 되는대로 결합가능
 - exceptionally 로 예외처리가 용이하다
 
 

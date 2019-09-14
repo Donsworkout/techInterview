@@ -177,6 +177,8 @@
         - 프록시의 사용 목적은 네트워크 캐싱, 조직내의 특정 웹사이트 액세스 방지, 액세스 로그 획득 등이 있다.
 
 ### 3. HTTP Request / Response 헤더
+> 요청의 경우 일단 헤더 앞에는 `GET / HTTP/1.1` 이런식으로 적혀있다.  
+응답의 경우 헤더 앞에는 `HTTP/1.1 200 OK` 라고 적혀있음
 - HTTP 헤더 - 일반 헤더 (General Header) 
     - 요청 및 응답 메시지 모두에서 사용 가능한 일반 목적의(기본적인) 헤더 항목
     - 주요 항목
@@ -544,21 +546,18 @@ HTTP/1.1에서 클라이언트는 요청한 HTML문서를 수신한 후  HTML문
 https://gmlwjd9405.github.io/2018/09/21/rest-and-restful.html
 
 **Representational State Transfer**  
-- HTTP **URI(Uniform Resource Identifier)** 를 통해 **자원(Resource)** 을 명시하고, HTTP Method(POST, GET, PUT, DELETE)를 통해 해당 자원에 대한 **CRUD Operation** 을 적용하는 것을 의미한다.
+> **URI(Uniform Resource Identifier)** 를 통해 **자원(Resource)** 을 명시하고, HTTP Method (POST, GET, PUT, DELETE)를 통해 해당 자원에 대한 **행위(CRUD operation)** 을 명시하고 표현(html, json ...) 하는 것
 
-- 자원을 이름(표현) 으로 구분하여 해당 자원의 상태(정보)를 주고 받는 모든 것을 의미한다.  
-즉, 자원(resource)의 표현(representation) 에 의한 상태 전달
+**무언가를 지우는 일**
+~~~
+post/delete/1
+~~~
+이렇게 쓰는것이 아니라 헤더에 method 를 명시하고 
+~~~
+post/1 
+~~~
+이렇게 지우는 행위를 표현하는 것이 RESTful
 
-1. 자원의 표현 
-자원: 해당 소프트웨어가 관리하는 모든 것  
--> Ex) 문서, 그림, 데이터, 해당 소프트웨어 자체 등
-
-    자원의 표현: 그 자원을 표현하기 위한 이름  
--> Ex) DB의 학생 정보가 자원일 때, ‘students’를 자원의 표현으로 정한다.
-
-2. 상태(정보) 전달  
-데이터가 요청되어지는 시점에서 자원의 상태(정보)를 전달한다.
-JSON 혹은 XML를 통해 데이터를 주고 받는 것이 일반적이다.
 
 ## 8. 소켓 / 전문 통신
 
