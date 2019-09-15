@@ -304,6 +304,8 @@ https://onsil-thegreenhouse.github.io/programming/java/2018/02/18/java_tutorial_
     검색이 빠른 구현체는 **ArrayList**  
     노드간 삽입이 빠른 구현체는 **LinkedList**
 
+    - ArrayList는 내부적으로 데이터를 배열에서 관리하며 데이터의 추가, 삭제를 위해 임시 배열을 생성해 데이터를 복사 하는 방법을 사용 하고 있기 때문에 삽입 삭제시 많은 복사가 일어나기 때문에 Cost 가 크다.
+
     **참고로** List 인터페이스는 리스트에서 n번쨰 요소에 접근하는 메서드를 제공한다.  
     Collection 클래스에서 이러한 접근을 지원한다는 사실을 나타내려면, RandomAccess 라는 인터페이스를 구현해야 한다.  
     **ArrayList**는 이러한 RandomAccess 인터페이스를 구현하지만,  
