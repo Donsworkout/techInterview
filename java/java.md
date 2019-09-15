@@ -46,9 +46,17 @@
 
 - Heap의 old 영역 (old. permanent) 에서 일어나는 Major GC가 있다.
 
-- 메소드 영역에는 클래스, static 변수 등이 저장되는데, 이때 올라온 클래스에서 인스턴스를 생성하면 Heap 영역에 인스턴스가 생성되는 것이다.
+**자바 런타임 메모리 설명**
 
-- 스택 메모리에는 지역변수, 파라미터, 리턴 값 등이 저장된다.
+- **Method Area :** 클래스, static 변수 등이 저장되는데, 이때 올라온 클래스에서 인스턴스를 생성하면 Heap 영역에 인스턴스가 생성되는 것이다.
+
+- **Heap Area :** 인스턴스 저장
+
+- **Stack Area :** 지역변수, 파라미터, 리턴 값 등이 저장된다.
+
+- **PC Register :** 스레드가 시작 될 때 생성, 현재 수행중인 JVM의 명령의 주소를 가진다.
+
+- **Native Method Stack :** : 자바 외의 언어로 작성된 네이티브 코드를 위한 스택이다. 즉, JNI(Java Native Interface)를 통해 호출하는 C/C++ 등의 코드를 수행하기 위한 스택으로, 언어에 맞게 C 스택이나 C++ 스택이 생성된다.
 
 #### GC 절차
 #### Minor GC
@@ -277,6 +285,10 @@ https://hackersstudy.tistory.com/26
 https://onsil-thegreenhouse.github.io/programming/java/2018/02/18/java_tutorial_1-22/
 
 ![283](https://user-images.githubusercontent.com/26560119/64241191-2cea8600-cf3e-11e9-9b85-a3e9327e8cff.jpg)
+
+<img src="http://www.jitendrazaa.com/blog/wp-content/uploads/2011/04/Java-Collection-interfaces-and-concrete-classes.jpg"/>
+
+<img src="http://shivasoft.in/blog/wp-content/uploads/2011/04/JAVA-Map-interface-and-concrete-classes.jpg"/>
 
 > 컬렉션 프레임워크에는 자료 구조의 구현체가 있다.  
 선택한 자료 구조에 독립적인 코드를 쉽게 작성할 수 있도록 컬렉션 프레임워크는 공통 인터페이스를 제공한다.  

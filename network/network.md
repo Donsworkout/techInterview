@@ -57,8 +57,8 @@ https://kwongyo.tistory.com/7
 
 6. 표현 계층 (Presentation Layer)
     - 응용 계층의 다양한 데이터 형식을 전송형태의 구문으로 변환 
-    - JPEG, TIFF, GIF(그래픽 포맷), MPEG, QUICKTIME(동영상 포맷), MIDI(음악 포맷), RTF, ASCII, EBCDIC(텍스트 포맷)등을 받아들임
-    - 데이터 암호화와 압축을 담당 
+    - JPEG, TIFF, GIF(그래픽 포맷), MPEG, QUICKTIME(동영상 포맷), MIDI(음악 포맷), RTF, ASCII, EBCDIC(텍스트 포맷)등을 받아들이고 공통 형식으로 반환
+    - 데이터 암호화 / 데이터 압축 담당
 
 7. 응용 계층 (Application Layer)
     - 사용자에게 서비스를 제공하며, 하위 계층에 정보나 명령을 전달한다.
@@ -158,7 +158,8 @@ https://kwongyo.tistory.com/7
     - 예를 들어, 큰 용량의 리소스를 다운로드 받을지 말지 결정하기 위해서 사전 요청하는 용도로 사용할 수 있습니다.
 
 4. PUT
-    - 요청된 자원을 수정(UPDATE)한다. 
+    - 요청된 자원을 수정(UPDATE) 및 생성(CREATE) 한다 
+    - 정확히는 멱등함수와 비슷하게, 지정 위치에 덮어쓰는 느낌이다. (없으면 삽임한다)
     - 자원내 모든 필드영역 업데이트 (DB 1 ROW 전체 수정)
     - 만약 일부만 전달할 경우, 그외의 필드 모두 null or 초기값 처리
     - 따라서 PUT 잘못쓰면 골로간다
@@ -173,7 +174,7 @@ https://kwongyo.tistory.com/7
     - 보안 위협
 
 7. OPTIONS
-    - 요청한 URL이 어떤 메서드를 제공하는지 체크 
+    - 요청한 URL이 어떤 http 메서드를 지원 하는지 체크 
     - 보안 위협
 
 8. TRACE
