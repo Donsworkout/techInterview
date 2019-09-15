@@ -179,7 +179,7 @@ public class Test_AspectJ {
 ~~~
 
 ## 3. Spring MVC
-![다운로드](https://user-images.githubusercontent.com/26560119/58632046-7a43cf80-831f-11e9-96d8-f9f90ce7d985.png)
+![다운로드](https://user-images.githubusercontent.com/26560119/64921497-e3801d80-d7fe-11e9-9c8c-7adca2b6cb97.png)
 
 1. Client 요청은 항상 Dispatcher Servlet 이 가로챈다.
 2. Dispatcher Servlet이 HandlerMapping 에게 요청을 전달

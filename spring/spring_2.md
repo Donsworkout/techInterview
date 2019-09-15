@@ -153,12 +153,18 @@ public class HelloServlet extends HttpServlet {
 ### 4. 스프링 웹 어플리케이션 동작원리 
 https://minwan1.github.io/2017/10/08/2017-10-08-Spring-Container,Servlet-Container/
 
+https://javannspring.tistory.com/231
+
 ![PlDF42i](https://user-images.githubusercontent.com/26560119/63500439-ceb4b080-c504-11e9-84a4-98dc31402e3b.png)
 
 
 1. 웹 어플리케이션이 실행되면, Tomcat(WAS)에 의해 web.xml 이 로딩된다.
+    - ServletContainer (톰캣) -> URL 확인 -> 요청을 처리할 서블릿 찾아 실행
+    - web.xml : 각종 설정을 위한 파일
 
-2. web.xml에 등록되어 있는 **ContextLoaderListener(Java Class)** 가 생성된다. ContextLoaderListener 클래스는 ServletContextListener 인터페이스를 구현하고 있으며, **ApplicationContext** (스프링 컨테이너) 를 생성하는 역할을 수행한다.
+2. web.xml에 등록되어 있는 **ContextLoaderListener** 생성 
+    - ContextLoaderListener 클래스는 ServletContextListener 인터페이스를 구현
+    - ApplicationContext(스프링 컨테이너) 를 생성하는 역할을 수행한다.
 
 3. 생성된 ContextLoaderListener는 root-context.xml을 loading한다.
 

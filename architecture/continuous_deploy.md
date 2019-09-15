@@ -1,5 +1,31 @@
 [목록으로](https://github.com/Donsworkout/techInterview/blob/master/README.md)
 
+## 배경지식
+### 1. L4 스위치 
+> L4 스위치 = 포트 + 로드밸런싱 
+
+로드밸런싱은, 동일한 역할을 수행하는 서버 그룹을 VIP (Virtual IP) 를 통해 관리하며, 
+서버로 향하는 트래픽을 일단 VIP를 가진 L4 스위치로 수신한 후 Round Robin 등 분배정책에 따라 적절한 서버에 분배해 주는 것을 말합니다. (부하 분산)
+
+* VIP (Virtual IP) 는 서버그룹의 대표 IP라 할 수 있습니다. 
+
+#### 1.1 왜 L4 스위치를 사용하는가?
+1. 부하를 분산하기 위해  
+    예를 들어 한 서버에 웹 서비스(80)를 하는 서버가 있는데, 부하 문제로 서버를 증설해야 하는 상황이라고 가정하자.
+    그러나 서버를 여러대 두고 IP를 하나 더 할당하게 되면, 기본 서비스와 IP가 달라지는 문제가 발생한다.
+
+    이 때 사용하는 것이 L4장비의 **VIP** 이다.
+
+    예를 들어 기존에 사용하는 서버의 IP가 `128.x.x.1` 이라고 가정하자,  
+    1. 이 IP를 L4장비의 VIP로 할당한다. `128.x.x.1 / 80`
+    2. 기존 서버에는 128.x.x.2 와 새로운 서버에는 128.x.x.3을 할당한다.
+    3. L4장비에 로드밸런싱이 가능하게 세팅합니다.
+    4. 그러면 이제 128.x.x.1 로 요청하는 응답에 대해서 L4가 처리하게 됨
+    5. hash, round-robin 방식 등을 이용하여 로드를 분산한다.
+
+2. fail-over 기능 (실패 대비)  
+    L4에 fail over 기능을 이용 할 경우, 에러가 발생한 인스턴스 대신 다른 인스턴스가 대답하게 할 수 있다.
+
 ## 무중단 배포 
 https://perfectacle.github.io/2019/04/21/non-stop-deployment/
 
@@ -18,7 +44,7 @@ https://perfectacle.github.io/2019/04/21/non-stop-deployment/
 - 비용을 위해 배포시에만 두개의 서버를 운용해도 된다.
 
 ### 무중단 배포의 종류
-### Rolling Deployment
+### 1. Rolling Deployment
 ![elb-basic](https://user-images.githubusercontent.com/26560119/63570930-9de28300-c5b9-11e9-9d17-3a29d374c455.png)
 - 로드밸런서도 두개를 운용하는게 좋음 
 
@@ -32,7 +58,7 @@ https://perfectacle.github.io/2019/04/21/non-stop-deployment/
 단점은 배포 시간이 오래걸리고,  
 누구는 이전 버전을 서비스 받고 누구는 다음 버전을 서비스받는 문제가 생긴다.
 
-### Blue / Green Deployment
+### 2. Blue / Green Deployment
 ![thumbs](https://user-images.githubusercontent.com/26560119/63571233-98d20380-c5ba-11e9-8142-76f762ce3feb.jpg)
 
 > Blue 는 실제 프로덕션 환경을 말하고, Green 은 새롭게 배포할 환경(alpha) 이다.  
@@ -68,5 +94,18 @@ https://perfectacle.github.io/2019/04/21/non-stop-deployment/
 
 - 만약 1.0.2버전에 문제가 있으면 아직 없애지 않은 1.0.1 버전의 서버그룹으로 로드밸런서를 연결해 주기만 하면 된다. 이후에 1.0.2 버전의 문제를 해결하고 다시 로드밸런서만 옮겨서 연결하면 된다.
 
-### 회고
+#### 회고
 그러나 이같은 경우는 클라우드 환경이나 서버를 융통성있게 운용하는 환경에서나 가능하다. 물리 서버를 설치해놓고 평소에 그린환경의 서버그룹을 쓰지 않는다면 자원이 아깝다. (테스트서버를 그린환경으로 해놓고 쓰는 등의 효율적 운용이 필요)
+
+### 2.1 Ngnix 를 이용한 무중단 배포
+![997A14375A73F91D04](https://user-images.githubusercontent.com/26560119/64922359-70c86f80-d809-11e9-91d4-91ab359ae6c7.png)
+
+> Ngnix 는 스레드와 프로세스를 사용하는 Apache 와 달리, 비동기 이벤트 호출 방식을 사용하는 오픈소스 웹 서버 
+
+하나의 EC2 혹은 리눅스 서버에 Nginx 1대 와 스프링부트 jar를 2대 를 사용  
+Nginx는 80(http), 443(https) 포트를 할당하고  
+스프링부트1은 8081포트로, 
+스프링부트2는 8082포트로 실행한다.
+
+1. Ngnix 가 두 WAS 중, 하나에만 연결 시켜놓음
+2. 연결되지 않은 놈을 배포 시키고 `ngnix reload` 를 통해, ngnix 가 바라보는 방향 변경
