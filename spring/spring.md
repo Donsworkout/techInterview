@@ -262,8 +262,8 @@ java -jar foo.jar
 - 별도의 WAS를 구현하고 그 위에 다른 application 과 함께 운영해야 한다면 외장 톰캣
 - 그럴필요 없다면 내장 톰캣을 써도 좋다.  
 - D2 Naver 의 동영상 플랫폼 개발 팀도 embed 톰캣을 쓰더라  
-https://d2.naver.com/helloworld/5626759
-
+https://d2.naver.com/helloworld/5626759  
+https://zepinos.tistory.com/51
 ## 7. 스프링 Log  
 - 스프링은 LogBack, Log4j 등 여러 로그 라이브러리를 지원한다.
 - Logback 이 Log4j 보다 10배이상 빠르고 메모리 효율성도 좋단다.
