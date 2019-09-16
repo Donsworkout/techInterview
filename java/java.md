@@ -764,7 +764,11 @@ default void sort(Comparator<? super E> c){
 - 값이 없다면 Optional.empty메서드로 Optional을 리턴한다
 
 ### 5. CompletaleFuture
-> 미래를 예약하는 값이나, 그냥 Future 에 비해 장점이 많다  
+https://m.blog.naver.com/PostView.nhn?blogId=horajjan&logNo=220328527952&proxyReferer=https%3A%2F%2Fwww.google.com%2F
+
+> 미래를 예약하는 값이나, 그냥 Future 에 비해 장점이 많다. 예를 들어 서로 독립적인 비동기 동작이든 아니면 하나의 비동기 동작이 다른 비동기 동작의 결과에 의존하는 상황이든 여러 비동기 동작을 조립하고 조합할 수 있다. 
+
+한 문장으로만 표현하자면, **람다 표현식** 과 **파이프라이닝** 이 가장 큰 장점
 ~~~java
 ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -787,8 +791,9 @@ System.out.println("async request is ready.");
 따라서 장점을 따지자면
 - 태스크간 조합과 결합이 용이하다 (연속적 연결)
     - 여러 Completable Future 를 합쳐서, 마지막 놈 되는대로 결합가능
+    - thenCompose 매소드는 첫 번째 연산의 결과를 두 번째 연산으로 전달한다
 - exceptionally 로 예외처리가 용이하다
-
+- 커스텀 Executor를 사용하여 스레드 풀의 크기를 조절하는 등 애플리케이션에 맞는 최적화된 설정을 만들 수 있다 (오버로딩 된 supplyAsync)
 
 ### 6. New date / time APIs
 
