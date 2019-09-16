@@ -2,60 +2,46 @@
 
 ## 1. Why SpringBoot?
 
-### 왜 스프링부트가 필요할까?  
-- Embedded Tomcat (WAS, Servlet Container) 을 제공한다. 
-- Maven pom.xml에서 의존 라이브러리의 버전을 일일이 지정하지 않아도 된다.  
-(스프링 부트가 권장 버전을 관리한다)
-- @SpringBootApplication 어노테이션으로 web.xml 파일을 대체한다.
+### 스프링부트의 특징
+- Embedded Tomcat (WAS, Servlet Container) 제공
+    - 사실 AutoConfiguration 맥락에, 톰캣 객체 생성 및 연결 준비 등도 들어감
+    - DispatcherServlet 도 자동설정 됨
+    - 즉 서블릿 컨테이너 만들고 서블릿 넣어주는일을 자동으로 해준다는 말
+- 의존성 관리
+    - Maven pom.xml 에서 의존 라이브러리의 버전을 일일이 지정하지 않아도 된다.  
+    (등록된 라이브러리에 한해 스프링 부트가 *권장 버전* 을 관리한다)
+- @SpringBootApplication 어노테이션으로 xml 설정 대체
     - @SpringBootApplication 는 @ComponentScan 과 @EnableAutoConfiguration 을 포함하고 있다. 
     - @ComponentScan 은 프로젝트 패키지에 있는 Bean을 찾아서 등록한다. 
-    - @EnableAutoConfiguration 사용 가능성이 높은 Bean을 추측해 자동으로 등록한다.
-- ContextLoaderListener / DispatcherServlet / CharacterEncodingFilter 설정은 Spring Boot에서는 추가하지 않아도 된다.
+    - @EnableAutoConfiguration 로 클래스패스 내 의존성 관련 자동 설정
+- 스프링부트는 Bean 을 두단계로 등록한다.
+    1. @ComponentScan
+    2. @EnableAutoConfiguration
+- ContextLoaderListener / DispatcherServlet / CharacterEncodingFilter 설정은 Spring Boot 에서는 추가하지 않아도 된다.
 
-> ​스프링 부트는 classpath 상에 사용가능한 프레임워크와 이미 있는 환경설정을 바라본다.  
- 이것들을 기반으로 스프링 부트는 애플리케이션을 이 프레임워크들과 함께 구성하는데 필요한 기본 환경설정을 제공한다. 이것을 **(A) Auto Configuration** 이라고 부른다.
+- 독립실행 가능한 어플리케이션 지향 (JAR도 독립실행 가능)
+    - mvn package를 하면 실행 가능한 JAR 파일 “하나가" 생성 됨.
+    - 이는 spring-maven-plugin이 해주는 일 (패키징)
+    - 스프링 부트는 JAR 파일들을 읽어들이는 로더를 제공한다.
+    - JAR 런쳐를 사용해서 main 함수가 있는 JAR 파일을 실행한다.
 
-#### (A) Auto Configuration
-- 스프링 MVC에서 사용하는 의존성은 아래와 같다. 
-- Spring MVC, Json 위한 Jackson, Hibernate validator, Log4j
-- 버전이 굳이 명시되어 있는것을 알 수 있다.
-~~~xml
-<dependency>
-   <groupId>org.springframework</groupId>
-   <artifactId>spring-webmvc</artifactId>
-   <version>4.2.2.RELEASE</version>
-</dependency>
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.5.3</version>
-</dependency>
-<dependency>
-    <groupId>org.hibernate</groupId>
-    <artifactId>hibernate-validator</artifactId>
-    <version>5.0.2.Final</version>
-</dependency>
-<dependency>
-    <groupId>log4j</groupId>
-    <artifactId>log4j</artifactId>
-    <version>1.2.17</version>
-</dependency>
-~~~
+### 핵심 장점
+1. 의존성 관리
 
-- Spring Boot Starter App 을 이용하면 아래 모든 의존성이 자동 세팅된다.
-~~~xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-~~~
+2. 임베디드 톰캣 (독립 실행 가능한 어플리케이션)
+    - 톰캣 위에 war 를 얹지 않아도, 스프링부트는 jar를 읽을 수 있도록 기능을 제공한다.
+    - 내장 톰캣도 제공하면서, jar 도 실행가능 하도록 하므로 독립실행이 가능하다.
 
-- Spring: core, beans, context, aop
-- Web MVC: (Spring MVC)
-- Jackson: for JSON Binding
-- Validation: Hibernate Validator, Validation API
-- **Embedded Servlet Container: Tomcat**
-- Logging: logback, slf4j
+3. Auto Configuration (@EnableAutoConfiguration)
+    > Spring Boot Auto Configuration 은 추가된 jar 의존성을 기반으로 Spring application을 자동적으로 설정하는 것을 시도한다. 예를 들어 HSQLDB 가 클래스패스에 있다면 어떤 데이터베이스 연결 빈을 정의하지 않아도 자동적으로 in-memory 데이터베이스에 접근할 것이다.
+    - @SpringBootApplication 에 @EnableAutoConfiguration 이 포함되어 있다.
+    - AutoConfiguration 을 담당하는 결국은 @Configuration 기반이다
+    - spring.factories 에 명시되어 있는 클래스들에 한해 자동설정을 적용한다.
+    - 알아서 조건에 따라 설정 Bean 을 생성하고 적용한다.
+
+4. 어노테이션 기반 Component Scan (@Component)
+    > 현재 패키지 이하에서, @Component 어노테이션이 붙은 클래스들을 찾아 Bean 으로 등록한다. (제외도 가능)
+    - 예를 들어 @Controller 어노테이션도 내부를 까보면 @Component 가 들어있다.
 
 ## 2. Servlet 과 JSP
 ### 1. 서블릿 (Servlet)
@@ -334,7 +320,7 @@ Spring-AOP는 ***메서드 호출*** Joinpoint 만을 지원함.
     - `root-context.xml` 은 Service , Repository 와 같은 bean 을 설정함
 
 4. Root Spring Container 구동
-    - ContextLoaderListener 가 `root-context.xml` 의 설정 기반으로 Root Spring Container 구동
+    - ContextLoaderListener 가 `root-context.xml` 의 설정 기반으로 Root Spring Container 구동 
 
 4. 사용자 요청 받음
     - 최초의 클라이언트 요청이라면 DispatcherServlet 객체 생성
