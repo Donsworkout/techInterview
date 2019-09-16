@@ -768,7 +768,7 @@ https://m.blog.naver.com/PostView.nhn?blogId=horajjan&logNo=220328527952&proxyRe
 
 > 미래를 예약하는 값이나, 그냥 Future 에 비해 장점이 많다. 예를 들어 서로 독립적인 비동기 동작이든 아니면 하나의 비동기 동작이 다른 비동기 동작의 결과에 의존하는 상황이든 여러 비동기 동작을 조립하고 조합할 수 있다. 
 
-한 문장으로만 표현하자면, **람다 표현식** 과 **파이프라이닝** 이 가장 큰 장점
+한 문장으로만 표현하자면, **람다 표현식** 과 **파이프라인 (.xx.yy)** 이 가장 큰 장점
 ~~~java
 ExecutorService executor = Executors.newSingleThreadExecutor();
 
