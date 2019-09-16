@@ -319,18 +319,52 @@ Spring-AOP는 ***메서드 호출*** Joinpoint 만을 지원함.
     @Transactional 어노테이션은 비즈니스 로직 실행 뒤 Exception을 인식하고 처리한다.  
     따라서 로직 안에서 try - catch 를 해버리면 @Transactional이 예외를 인식하기도 전에 메서드 내부에서 예외를 catch 하게 되어 예외시 ROLLBACK이 불가능하다.
 
-    
+## 5. Spring MVC 동작 원리
 
-## 5. Spring MVC 동작 원리 
+![99D9B34B5C9C5B501C](https://user-images.githubusercontent.com/26560119/64938537-3c9c8f80-d899-11e9-8760-dbdbdd26ba17.png)
+
+1. 웹 어플리케이션이 실행되면 Tomcat(WAS) 에 의해 배포서술자 `web.xml` 로딩
+
+2. WAS 는 `web.xml` 에 등록되어 있는 ContextLoaderListener 생성  
+    - 자동으로 IoC container (ApplicationContext) 초기화
+    - Servlet 을 사용하는 시점에 ServletContext 에 ApplicationContext 등록
+    - Servlet 이 종료되는 시점에 ApplicationContext 삭제
+
+3. 위에서 생성된 ContextLoaderListener는 `root-context.xml` 을 로딩
+    - `root-context.xml` 은 Service , Repository 와 같은 bean 을 설정함
+
+4. Root Spring Container 구동
+    - ContextLoaderListener 가 `root-context.xml` 의 설정 기반으로 Root Spring Container 구동
+
+4. 사용자 요청 받음
+    - 최초의 클라이언트 요청이라면 DispatcherServlet 객체 생성
+
+5. 두번째 Spring Container 구동 (By DispatcherServlet)
+    - 두번째 스프링 컨테이너에는 컨트롤러 Bean 들이 들어 있고, 기존 root container 클래스를 상속받는다.
+    - DispatcherServlet 객체는 `WEB-INF/config` 폴더에 있는  
+    servlet-context.xml` 파일을 로딩하여 두번째 스프링 컨테이너를 구동
+    - servlet-context.xml을 보면 어노테이션을 스캔하여 bean 객체로 등록함을 볼 수 있음 (@Controller)
+    - DispatcherServlet 이 **두번쨰 스프링 컨테이너** 를 구동 한다는 사실 기억할 것
+
+6. DispatcherServlet 의 `doService()` 호출
+    1. `doService()` 에는 사용자의 요청을 처리하기 위한, Handler 과 Adapter 을 찾아 호출하기 위해 `doDispatch()` 호출
+    2. `doDispatch()` 에서는 HandlerMapping 을 통해서 요청에 맞는 Controller 의 HandlerMethod 를 찾고, HandlerMethod 를 호출할 수 있는 HandlerAdapter 찾음
+    3. HandlerAdapter 가 HandlerMethod 호출
+
+7. Controller 요청 처리 후, Controller 는 ModelAndView , View 리턴
+
+8. 리턴받은 View 는 ViewResolver가 먼저 받아 해당 view가 존재하는지 검색
+    
+9. DispatcherServlet은 ViewResolver 로 부터 JSP 등 최종 표시 결과를 받아서 최종 결과를 사용자에게 전송 
 
 ## 6. JPA vs MyBatis
 
 ### 6-1) 영속성 (Persistence)
+
 - 데이터를 생성한 프로그램의 생명이 다하더라도, 데이터는 남아 있는 것
 - 따라서 우리는 데이터베이스(DISK) 를 통해 영속성을 부여한다.
 - Persistence Layer 는 데이터에 영속성을 부여해 주는 계층이다.
 - 여기서 JDBC 없이 영속성을 갖게 해 주는 도구가, Persistence Framework  
-
 
 ![spring-jdbc-layer](https://user-images.githubusercontent.com/26560119/58633311-03a8d100-8323-11e9-81bf-1e18a68a6b34.png)
 
