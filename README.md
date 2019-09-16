@@ -16,14 +16,11 @@
 
 2. Spring Framework 
 
-    (1) 간단 정리  
+    (1) 스프링 기본   
     [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/spring/spring.md)
 
     (2) 프로젝트에서 쓰인 spring   
     [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/spring/spring_intermediate.md)
-
-    (3) 스프링 동작 원리   
-    [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/spring/spring_2.md)
 
 3. OOP와 디자인 패턴  
 [상세 보기](https://github.com/Donsworkout/techInterview/blob/master/oop/oop.md)

@@ -102,6 +102,8 @@ https://perfectacle.github.io/2019/04/21/non-stop-deployment/
 
 > Ngnix 는 스레드와 프로세스를 사용하는 Apache 와 달리, 비동기 이벤트 호출 방식을 사용하는 오픈소스 웹 서버 
 
+위의 그림에는 Ngnix가 리버스 프록시 (대리인) 서버로 사용되고 있다.
+
 하나의 EC2 혹은 리눅스 서버에 Nginx 1대 와 스프링부트 jar를 2대 를 사용  
 Nginx는 80(http), 443(https) 포트를 할당하고  
 스프링부트1은 8081포트로, 
