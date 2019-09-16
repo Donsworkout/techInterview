@@ -415,23 +415,34 @@ HTTP 는 비연결 방식으로 연결을 매번 만들고 끊는 구조이다.
 
 1.  Binary Framework 
 
-    - HTTP/2 는 TCP 계층과의 사이에 새로운 Binary Framework 를 통해 네트워크 스택을 구성한다.
-    - 기존 텍스트 기반 Header 와 Body 대신 HTTP/2 는 전송에 필요한 메시지들을 Binary 단위로 구성하여 더 작은 프레임으로 쪼개서 관리한다.
+    <img width="590" alt="스크린샷 2019-09-16 오후 2 29 55" src="https://user-images.githubusercontent.com/26560119/64935933-7caa4500-d88e-11e9-9d7f-4630d9c9b598.png">
+
+    - 기존 text 기반 Header 와 Body 대신 HTTP/2 는 전송에 필요한 메시지들을 Binary 단위로 구성하여 더 작은 프레임으로 쪼개서 관리하고 송신한다.
 
     기존에 텍스트 기반으로 Header 와 Data 가 연결되고 있던 1.1 이하 버전과 다르게 HTTP/2 는 전송에 필요한 메시지들을 Binary 프레임 단위로 구성하며 필요 정보를 더 작은 프레임으로 쪼개서 관리한다. 
 
 2. Multiplexing 개선
-> 멀티플렉싱이란 한 링크에서 어러개의 신호를 동시에 송수신 할 수 있도록 하는 것
+- 멀티플렉싱이란 한 connection 에서 여러개의 요청을 동시에 송/수신 할 수 있도록 하는 것
+- 기존 HTTP/1.x 에서는 순차 전송하거나 병렬 요청 응답을 위해서는 여러 연결이 필요했음
 
-<img src="https://t1.daumcdn.net/cfile/tistory/995998375C17AE5F13"/>
+    <img src="https://freecontent.manning.com/wp-content/uploads/HTTP-vs-with-Push-HTTP1.gif"/>
 
-    기존 HTTP 1.1 과는 다르게 이것이 가능한 이유는 HTTP2 는 패킷을 Frame 단위로 세분화하여 순서에 상관없이 받는쪽에서 *조립* 하도록 설계하였기 때문이다. 
+    VS
+    
+    <img src="https://freecontent.manning.com/wp-content/uploads/HTTP-vs-with-Push-HTTP2.gif"/>
 
-3.  Header Compression
-    - 헤더 압축
+    이것이 가능한 이유는 HTTP2 는 패킷을 Frame 단위로 세분화하여 순서에 상관없이 받는쪽에서 ***조립*** 하도록 설계하였기 때문이다
+
+3.  Header Compression  
+    헤더 압축 지원
 
 4. Server Push  
-HTTP/1.1에서 클라이언트는 요청한 HTML 문서를 수신한 후  HTML 문서를 해석하면서 필요한 리소스를 재 요청하는 반면 HTTP/2에선 Server Push기법을 통해서 클라이언트가 요청하지도 않은 (HTML문서에 포함된 리소스) 리소스를 서버가 직접 Push 해주는 방법으로 클라이언트의 요청을 최소화 해서 성능 향상을 이끌어 낸다. **이벤트 기반**으로 동작한다.
+
+    <img src="https://freecontent.manning.com/wp-content/uploads/HTTP-vs-with-Push-HTTP2push.gif"/>
+
+    - HTTP/1.1에서 클라이언트는 요청한 HTML 문서를 수신한 후 HTML 문서를 해석하면서 필요한 리소스를 재 요청한다.
+    
+    - 그러나 HTTP/2에선 Server Push기법을 통해서 클라이언트가 요청하지도 않은 (HTML문서에 포함된 리소스) 리소스를 서버가 직접 Push 해주는 방법으로 클라이언트의 요청을 최소화 해서 성능 향상을 이끌어 낸다. **이벤트 기반**으로 동작한다.
 
 
 ### 5. HTTP **VS** Socket
