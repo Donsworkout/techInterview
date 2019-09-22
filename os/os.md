@@ -130,8 +130,9 @@ https://worthpreading.tistory.com/90
 
 #### wait / notify
 1. wait 
-- 가지고 있던 Lock 을 풀고 대기하라
- 
+- 현재 thread 야, 가지고 있던 Lock 을 풀고 대기해라
+2. notify
+- wait 하고 있는 thread 를 깨운다 
 ### Critical Section
 
 임계 구역으로 프로세스 또는 스레드들이 공통 변수들에 접근, 및 수정하고 테이블을 갱신하며, 파일의 읽기, 쓰기 작업들을 수행하는 영역을 말한다. 즉 race condition이 발생하는 영역을 뜻한다. 이미 한 스레드가 Critical Section에 들어갔을 때 다른 스레드들은 이 곳으로의 접근을 막아야한다.
