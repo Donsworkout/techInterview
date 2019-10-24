@@ -21,7 +21,7 @@ CI / CD 에 적합하게, 짧은 시간 안에 원하는 서비스를 수정 및
 필요한 서비스만을 scale out 할 수 있다. 
 
 ### 4. 하나의 서비스에 문제가 생겨도, 다른 서비스에 문제를 발생시키지 않는다.
-그러나 문제가 생긴 서비스를 호출 시에 문제가 발생할 수 있는데, 이는 [Circuit Breaker]()로 해결한다.
+그러나 문제가 생긴 서비스를 호출 시에 문제가 발생할 수 있는데, 이는 [Circuit Breaker](https://github.com/Donsworkout/techInterview/blob/master/architecture/circuit_breaker.md)로 해결한다.
 <img src="https://t1.daumcdn.net/cfile/tistory/994B10335AD8704B2D"/>
 
 ## MSA 구조 채택 시 문제점 
